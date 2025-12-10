@@ -1,0 +1,30 @@
+{
+  "name": "sc-styleurban",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SC StyleUrban - Tienda de Ropa Online con Frontend y Backend integrados",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm run dev --prefix sc-styleurban/frontend",
+    "dev:backend": "npm run dev --prefix sc-styleurban/backend",
+    "build": "npm run build --prefix sc-styleurban/frontend",
+    "start": "node sc-styleurban/backend/server.js",
+    "install:all": "npm install --prefix sc-styleurban/frontend && npm install --prefix sc-styleurban/backend",
+    "vercel-build": "npm install --prefix sc-styleurban/frontend && npm install --prefix sc-styleurban/backend && npm run build --prefix sc-styleurban/frontend"
+  },
+  "keywords": [
+    "ecommerce",
+    "vue",
+    "vite",
+    "express",
+    "tienda",
+    "pagos"
+  ],
+  "author": "SC StyleUrban",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+

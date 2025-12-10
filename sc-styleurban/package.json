@@ -1,18 +1,22 @@
 {
-  "name": "sc-styleurban",
+  "name": "sc-styleurban-monorepo",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "SC StyleUrban - Tienda de Ropa Online",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "npm run dev --prefix frontend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "build": "npm run build --prefix frontend",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend"
   },
-  "dependencies": {
-    "vue": "^3.5.24"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1",
-    "vite": "^7.2.4"
-  }
+  "keywords": [
+    "ecommerce",
+    "vue",
+    "vite",
+    "tienda"
+  ],
+  "author": "SC StyleUrban",
+  "license": "MIT"
 }

@@ -1,11 +1,12 @@
 # Dependencies
 node_modules/
-frontend/node_modules/
-backend/node_modules/
+sc-styleurban/frontend/node_modules/
+sc-styleurban/backend/node_modules/
 
 # Build outputs
-frontend/dist/
-frontend/dist-ssr/
+sc-styleurban/frontend/dist/
+sc-styleurban/frontend/dist-ssr/
+dist/
 
 # Logs
 *.log
@@ -20,6 +21,7 @@ lerna-debug.log*
 .env
 .env.local
 .env.*.local
+sc-styleurban/backend/.env
 
 # Editor directories and files
 .vscode/*
@@ -32,6 +34,9 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# Database
-backend/db.json
+# Database (development only)
+sc-styleurban/backend/db.json
+
+# Vercel
+.vercel
 
