@@ -51,6 +51,18 @@
               <span>Cliente</span>
               <strong>{{ customerData.name }}</strong>
             </div>
+            <div class="detail-item">
+              <span>Subtotal (Base)</span>
+              <strong>{{ formatPrice(cartStore.taxBase) }}</strong>
+            </div>
+            <div class="detail-item tax-item">
+              <span>IVA (19%)</span>
+              <strong>{{ formatPrice(cartStore.ivaAmount) }}</strong>
+            </div>
+            <div class="detail-item tax-item">
+              <span>INC/ICO (8%)</span>
+              <strong>{{ formatPrice(cartStore.icoAmount) }}</strong>
+            </div>
             <div class="detail-item highlight">
               <span>Total a Pagar</span>
               <strong class="price">{{
@@ -384,10 +396,11 @@ const openEpaycoCheckout = () => {
     .map((item) => `${item.name} (${item.size}) x${item.quantity}`)
     .join(", ");
 
-  // Calculate taxes (IVA 19%)
+  // Get taxes from cart store (IVA 19%, INC/ICO 8%)
   const totalPrice = cartStore.totalPrice;
-  const taxBase = Math.round(totalPrice / 1.19);
-  const tax = Math.round(totalPrice - taxBase);
+  const taxBase = cartStore.taxBase;
+  const ivaAmount = cartStore.ivaAmount;
+  const icoAmount = cartStore.icoAmount;
 
   // Configure ePayco handler
   const handler = window.ePayco.checkout.configure({
@@ -403,8 +416,8 @@ const openEpaycoCheckout = () => {
     currency: "cop",
     amount: String(totalPrice),
     tax_base: String(taxBase),
-    tax: String(tax),
-    tax_ico: "0",
+    tax: String(ivaAmount),
+    tax_ico: String(icoAmount),
     country: "co",
     name_billing: customerData.value.name || "",
     address_billing: customerData.value.address || "",
@@ -560,6 +573,21 @@ const retryPayment = () => {
 .detail-item strong {
   color: #fff;
   font-size: 0.95rem;
+}
+
+.detail-item.tax-item {
+  padding: 4px 0;
+  border-bottom: none;
+}
+
+.detail-item.tax-item span {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+.detail-item.tax-item strong {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
 }
 
 .detail-item.highlight {
