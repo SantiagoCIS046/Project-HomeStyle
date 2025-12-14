@@ -1,85 +1,101 @@
-# SC StyleUrban - Tienda de Ropa Online
+# 🛍️ SC StyleUrban - Tienda de Ropa Online
 
-Proyecto completo de e-commerce con Frontend (Vue 3 + Vite) y Backend (JSON Server).
+E-commerce completo con Frontend (Vue 3 + Vite) y Backend (Express + Pagos Reales) integrados en un solo repositorio.
+
+## 🚀 Características
+
+- ✅ **Frontend**: Vue 3 + Vite + Pinia + Vue Router
+- ✅ **Backend**: Express.js con API de pagos
+- ✅ **Pagos Reales**: Integración con Nequi y Wompi/Bancolombia
+- ✅ **Catálogo**: Camisetas Estampadas y Oversize
+- ✅ **Carrito**: Persistencia con localStorage
+- ✅ **Checkout**: Formulario completo de pedidos
+- ✅ **Responsive**: Diseño adaptable a todos los dispositivos
+- ✅ **Deploy**: Listo para GitHub y Vercel
 
 ## 📁 Estructura del Proyecto
 
 ```
-sc-styleurban/
-├── frontend/              # Aplicación Vue 3 + Vite
-│   ├── src/              # Código fuente
-│   │   ├── components/   # Componentes Vue
-│   │   ├── router/       # Vue Router
-│   │   ├── stores/       # Pinia stores
-│   │   ├── services/     # Servicios API
-│   │   ├── App.vue       # Componente principal
-│   │   ├── main.js       # Punto de entrada
-│   │   └── style.css     # Estilos globales
-│   ├── public/           # Assets públicos
-│   ├── md/               # Documentación
-│   ├── index.html        # HTML principal
-│   ├── vite.config.js    # Configuración Vite
-│   └── package.json      # Dependencias frontend
+StyleUrban/
+├── sc-styleurban/
+│   ├── frontend/              # Aplicación Vue 3
+│   │   ├── src/
+│   │   │   ├── components/   # Componentes Vue
+│   │   │   ├── router/       # Vue Router
+│   │   │   ├── stores/       # Pinia stores
+│   │   │   ├── services/     # Servicios API
+│   │   │   └── ...
+│   │   ├── public/           # Assets públicos
+│   │   └── package.json
+│   │
+│   └── backend/              # API Express
+│       ├── routes/           # Rutas de la API
+│       ├── services/         # Servicios de pago
+│       ├── utils/            # Utilidades
+│       ├── server.js         # Servidor Express
+│       └── package.json
 │
-├── backend/              # API Backend
-│   ├── db.json          # Base de datos JSON
-│   └── package.json     # Dependencias backend
+├── api/                      # Serverless Functions (Vercel)
+│   └── index.js             # API unificada para producción
 │
-├── package.json         # Scripts principales
-└── README.md           # Este archivo
+├── package.json             # Scripts principales
+├── vercel.json              # Configuración de Vercel
+├── .env.example             # Variables de entorno
+└── README.md                # Este archivo
 ```
 
-## 🚀 Instalación
+## 🔧 Instalación
 
-### Instalar todas las dependencias
+### 1. Clonar el repositorio
 
 ```bash
+git clone https://github.com/tu-usuario/StyleUrban.git
+cd StyleUrban
+```
+
+### 2. Instalar dependencias
+
+```bash
+# Instalar dependencias raíz
+npm install
+
+# Instalar dependencias de frontend y backend
 npm run install:all
 ```
 
-O manualmente:
+### 3. Configurar variables de entorno
 
 ```bash
-# Frontend
-cd frontend
-npm install
+# Copiar archivo de ejemplo
+cp .env.example .env
 
-# Backend
-cd ../backend
-npm install
+# Editar .env con tus credenciales
 ```
 
-## 💻 Desarrollo
+## 💻 Desarrollo Local
 
 ### Iniciar Frontend y Backend simultáneamente
 
 ```bash
-npm run dev:all
+npm run dev
 ```
+
+Esto iniciará:
+
+- **Frontend**: http://localhost:5173
+- **Backend**: http://localhost:3000
 
 ### Iniciar solo Frontend
 
 ```bash
 npm run dev:frontend
-# o
-cd frontend
-npm run dev
 ```
 
 ### Iniciar solo Backend
 
 ```bash
 npm run dev:backend
-# o
-cd backend
-npm run dev
 ```
-
-## 🌐 URLs de Desarrollo
-
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3001
-- **Ver pedidos**: http://localhost:3001/orders
 
 ## 📦 Build para Producción
 
@@ -87,11 +103,68 @@ npm run dev
 npm run build
 ```
 
-El build se generará en `frontend/dist/`
+El build se generará en `sc-styleurban/frontend/dist/`
+
+## 🌐 Despliegue en Vercel
+
+### Opción 1: Desde GitHub (Recomendado)
+
+1. **Sube el proyecto a GitHub**:
+
+   ```bash
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   git remote add origin https://github.com/tu-usuario/StyleUrban.git
+   git push -u origin main
+   ```
+
+2. **Conecta con Vercel**:
+
+   - Ve a [vercel.com](https://vercel.com)
+   - Click en "Import Project"
+   - Selecciona tu repositorio de GitHub
+   - Vercel detectará automáticamente la configuración
+
+3. **Configura las variables de entorno en Vercel**:
+
+   - En el dashboard de Vercel, ve a Settings > Environment Variables
+   - Agrega todas las variables de `.env.example`
+
+4. **Deploy**:
+   - Click en "Deploy"
+   - ¡Listo! Tu tienda estará en línea
+
+### Opción 2: Desde CLI
+
+```bash
+# Instalar Vercel CLI
+npm install -g vercel
+
+# Deploy
+vercel
+```
+
+## 🔐 Variables de Entorno para Producción
+
+En Vercel, configura estas variables:
+
+```
+NEQUI_CLIENT_ID=tu_client_id_real
+NEQUI_CLIENT_SECRET=tu_client_secret_real
+NEQUI_API_KEY=tu_api_key_real
+WOMPI_PUBLIC_KEY=pub_prod_tu_key_real
+WOMPI_PRIVATE_KEY=prv_prod_tu_key_real
+WOMPI_EVENTS_SECRET=tu_events_secret_real
+FRONTEND_URL=https://tu-dominio.vercel.app
+BACKEND_URL=https://tu-dominio.vercel.app/api
+NODE_ENV=production
+```
 
 ## 🛠️ Tecnologías
 
 ### Frontend
+
 - Vue 3
 - Vite
 - Pinia (State Management)
@@ -99,43 +172,39 @@ El build se generará en `frontend/dist/`
 - CSS3
 
 ### Backend
-- JSON Server (Base de datos local)
 
-## ✨ Características
+- Express.js
+- Axios
+- CORS
+- dotenv
 
-- ✅ Catálogo de productos (Camisetas Estampadas y Oversize)
-- ✅ Carrito de compras con localStorage
-- ✅ Sistema de checkout con formulario
-- ✅ Métodos de pago (Bancolombia y Nequi)
-- ✅ Base de datos de pedidos
-- ✅ Diseño responsive
-- ✅ Interfaz profesional en blanco y negro
+### Pagos
 
-## 📚 Documentación
+- Nequi API
+- Wompi API (Bancolombia)
 
-Toda la documentación se encuentra en `frontend/md/`:
-- `INSTRUCCIONES.md` - Guía de uso
-- `SUBIR-A-GITHUB.md` - Cómo subir a GitHub y Vercel
-- `README.md` - Documentación del frontend
+## 📚 Documentación Adicional
 
-## 🚀 Despliegue
+- [Integración de Pagos](sc-styleurban/frontend/md/INTEGRACION-PAGOS-REAL.md)
+- [Sistema de Pagos](sc-styleurban/frontend/md/SISTEMA-DE-PAGOS.md)
+- [Instrucciones de Uso](sc-styleurban/frontend/md/INSTRUCCIONES.md)
 
-### Vercel (Frontend)
+## 🤝 Contribuir
 
-1. Sube el proyecto a GitHub
-2. Importa en Vercel
-3. Configura el directorio raíz como `frontend`
-4. Deploy automático
-
-### Backend en Producción
-
-Para producción, reemplaza JSON Server con:
-- Supabase
-- Firebase
-- MongoDB Atlas
-- PlanetScale
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/nueva-caracteristica`)
+3. Commit tus cambios (`git commit -m 'Agregar nueva característica'`)
+4. Push a la rama (`git push origin feature/nueva-caracteristica`)
+5. Abre un Pull Request
 
 ## 📝 Licencia
 
 MIT
 
+## 👨‍💻 Autor
+
+SC StyleUrban
+
+---
+
+**¿Necesitas ayuda?** Revisa la documentación en `sc-styleurban/frontend/md/`

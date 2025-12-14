@@ -1,9 +1,222 @@
 <template>
   <div class="payment-container">
-    <!-- Vista Normal de Pago -->
-    <div v-if="!paymentResult" class="payment-main">
-      <div class="payment-header">
-        <button class="back-btn" @click="goBack">
+    <div class="payment-header">
+      <button class="back-btn" @click="goBack">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Volver
+      </button>
+      <h1>Método de Pago</h1>
+    </div>
+
+    <div class="payment-content">
+      <!-- Purchase Summary Card (Black) -->
+      <div class="purchase-summary-card">
+        <div class="summary-header">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path
+              d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+            ></path>
+          </svg>
+          <h2>Resumen de Compra</h2>
+        </div>
+
+        <div class="summary-content">
+          <!-- Order Info -->
+          <div class="info-row">
+            <span class="label">Pedido #</span>
+            <span class="value">{{ orderNumber }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Cliente</span>
+            <span class="value">{{ customerData.name }}</span>
+          </div>
+
+          <!-- Address Section -->
+          <div class="address-section">
+            <div class="address-header">
+              <span class="label">Dirección de Envío</span>
+              <button class="edit-btn" @click="goToCheckout">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                  ></path>
+                  <path
+                    d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                  ></path>
+                </svg>
+                Editar
+              </button>
+            </div>
+            <p class="address-text">{{ customerData.address }}</p>
+          </div>
+
+          <!-- Divider -->
+          <div class="divider"></div>
+
+          <!-- Products List -->
+          <div class="products-list">
+            <div
+              v-for="item in cartStore.cartItems"
+              :key="`${item.id}-${item.size}`"
+              class="product-item"
+            >
+              <span class="product-name"
+                >{{ item.name }} ({{ item.size }})</span
+              >
+              <span class="product-quantity">x{{ item.quantity }}</span>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="divider"></div>
+
+          <!-- Tax Breakdown -->
+          <div class="tax-row">
+            <span class="label">Subtotal (Base)</span>
+            <span class="value">{{ formatPrice(subtotal) }}</span>
+          </div>
+          <div class="tax-row">
+            <span class="label">IVA (19%)</span>
+            <span class="value">{{ formatPrice(iva) }}</span>
+          </div>
+          <div class="tax-row">
+            <span class="label">INC/ICO (8%)</span>
+            <span class="value">{{ formatPrice(inc) }}</span>
+          </div>
+
+          <!-- Divider -->
+          <div class="divider"></div>
+
+          <!-- Total -->
+          <div class="total-row">
+            <span class="label">Total a Pagar</span>
+            <span class="value">{{ formatPrice(total) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method Card (White) -->
+      <div class="payment-method-card">
+        <div class="epayco-header">
+          <div class="epayco-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </div>
+          <div class="epayco-info">
+            <h3>Pago Seguro con ePayco</h3>
+            <p>Múltiples métodos de pago disponibles</p>
+          </div>
+        </div>
+
+        <!-- Payment Methods Grid -->
+        <div class="payment-methods-grid">
+          <div class="method-item">
+            <span class="method-icon">💳</span>
+            <span class="method-label">Tarjetas</span>
+          </div>
+          <div class="method-item">
+            <span class="method-icon">🏦</span>
+            <span class="method-label">PSE</span>
+          </div>
+          <div class="method-item">
+            <span class="method-icon">💵</span>
+            <span class="method-label">Efectivo</span>
+          </div>
+          <div class="method-item">
+            <span class="method-icon">📱</span>
+            <span class="method-label">Nequi</span>
+          </div>
+        </div>
+
+        <!-- Pay Button -->
+        <button
+          class="pay-button"
+          :disabled="isProcessing"
+          @click="processPayment"
+        >
+          <svg
+            v-if="!isProcessing"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
+          <span v-if="!isProcessing">Pagar {{ formatPrice(total) }}</span>
+          <span v-else>Procesando...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div v-if="showSuccessModal" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <div class="success-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <h2>¡Pedido Realizado con Éxito!</h2>
+        <p>
+          Tu pedido <strong>{{ orderNumber }}</strong> ha sido registrado.
+        </p>
+        <p class="modal-message">
+          Hemos notificado a nuestro equipo sobre tu pedido.
+        </p>
+        <div class="notification-info">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -13,300 +226,63 @@
             stroke="currentColor"
             stroke-width="2"
           >
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
+            <path
+              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+            ></path>
           </svg>
-          Volver
-        </button>
-      </div>
-
-      <div class="payment-card">
-        <!-- Order Summary -->
-        <div class="order-summary">
-          <div class="summary-header">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path
-                d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
-              ></path>
-            </svg>
-            <h2>Resumen de Compra</h2>
-          </div>
-
-          <div class="order-details">
-            <div class="detail-item">
-              <span>Pedido #</span>
-              <strong>{{ orderNumber }}</strong>
-            </div>
-            <div class="detail-item">
-              <span>Cliente</span>
-              <strong>{{ customerData.name }}</strong>
-            </div>
-            <div class="detail-item">
-              <span>Subtotal (Base)</span>
-              <strong>{{ formatPrice(cartStore.taxBase) }}</strong>
-            </div>
-            <div class="detail-item tax-item">
-              <span>IVA (19%)</span>
-              <strong>{{ formatPrice(cartStore.ivaAmount) }}</strong>
-            </div>
-            <div class="detail-item tax-item">
-              <span>INC/ICO (8%)</span>
-              <strong>{{ formatPrice(cartStore.icoAmount) }}</strong>
-            </div>
-            <div class="detail-item highlight">
-              <span>Total a Pagar</span>
-              <strong class="price">{{
-                formatPrice(cartStore.totalPrice)
-              }}</strong>
-            </div>
-          </div>
+          <span>Notificación enviada al administrador</span>
         </div>
-
-        <!-- ePayco Payment Section -->
-        <div class="epayco-section">
-          <div class="section-header">
-            <div class="epayco-logo">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
-              </svg>
-            </div>
-            <div class="section-title">
-              <h3>Pago Seguro con ePayco</h3>
-              <p>Múltiples métodos de pago disponibles</p>
-            </div>
-          </div>
-
-          <div class="payment-methods-grid">
-            <div class="method-badge"><span>💳</span> Tarjetas</div>
-            <div class="method-badge"><span>🏦</span> PSE</div>
-            <div class="method-badge"><span>💵</span> Efectivo</div>
-            <div class="method-badge"><span>📱</span> Nequi</div>
-          </div>
-
-          <button
-            class="epayco-main-btn"
-            @click="openEpaycoCheckout"
-            :disabled="isProcessing"
-          >
-            <span v-if="!isProcessing" class="btn-content">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
-              </svg>
-              Pagar {{ formatPrice(cartStore.totalPrice) }}
-            </span>
-            <span v-else class="btn-loading">
-              <div class="spinner"></div>
-              Procesando...
-            </span>
-          </button>
-
-          <div class="security-badges">
-            <div class="badge">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              Pago 100% Seguro
-            </div>
-            <div class="badge">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-              Datos Encriptados
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Vista de Resultado de Pago -->
-    <div v-else class="payment-result-view">
-      <div class="result-card">
-        <!-- Success -->
-        <div v-if="paymentResult === 'success'" class="result-content success">
-          <div class="result-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-          <h2>¡Pago Exitoso!</h2>
-          <p class="result-message">Tu pedido ha sido confirmado</p>
-
-          <div class="result-details">
-            <div class="detail-row">
-              <span>Número de Pedido</span>
-              <strong>{{ orderNumber }}</strong>
-            </div>
-            <div class="detail-row">
-              <span>Total Pagado</span>
-              <strong>{{ formatPrice(paidAmount) }}</strong>
-            </div>
-            <div class="detail-row" v-if="transactionRef">
-              <span>Referencia ePayco</span>
-              <strong>{{ transactionRef }}</strong>
-            </div>
-          </div>
-
-          <p class="email-notice">
-            📧 Recibirás un correo de confirmación en breve
-          </p>
-
-          <button class="result-btn primary" @click="goToHome">
-            🏠 Volver a la Tienda
-          </button>
-        </div>
-
-        <!-- Pending -->
-        <div
-          v-else-if="paymentResult === 'pending'"
-          class="result-content pending"
-        >
-          <div class="result-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-          </div>
-          <h2>Pago Pendiente</h2>
-          <p class="result-message">Tu pago está siendo procesado</p>
-          <p class="pending-notice">
-            Te notificaremos cuando se confirme la transacción
-          </p>
-
-          <button class="result-btn primary" @click="goToHome">
-            🏠 Volver a la Tienda
-          </button>
-        </div>
-
-        <!-- Failed -->
-        <div
-          v-else-if="paymentResult === 'failed'"
-          class="result-content failed"
-        >
-          <div class="result-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="15" y1="9" x2="9" y2="15"></line>
-              <line x1="9" y1="9" x2="15" y2="15"></line>
-            </svg>
-          </div>
-          <h2>Pago No Procesado</h2>
-          <p class="result-message">
-            {{ errorMessage || "No se pudo completar el pago" }}
-          </p>
-
-          <div class="failed-actions">
-            <button class="result-btn secondary" @click="retryPayment">
-              🔄 Intentar de Nuevo
-            </button>
-            <button class="result-btn primary" @click="goToHome">
-              🏠 Volver a la Tienda
-            </button>
-          </div>
-        </div>
+        <button class="modal-btn" @click="goToHome">Volver al Inicio</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useCartStore } from "../stores/cart";
+import { useAuthStore } from "../stores/auth";
 import { orderService } from "../services/orderService";
+import { epaycoConfig } from "../config/epayco";
+import { notificationService } from "../services/notificationService";
 
 const router = useRouter();
-const route = useRoute();
 const cartStore = useCartStore();
+const authStore = useAuthStore();
 
-// State
 const isProcessing = ref(false);
+const showSuccessModal = ref(false);
 const orderNumber = ref("");
 const customerData = ref({});
 
-// Payment result state
-const paymentResult = ref(null); // 'success', 'pending', 'failed', null
-const paidAmount = ref(0);
-const transactionRef = ref("");
-const errorMessage = ref("");
+// Tax calculations
+// El total es el precio de las camisetas (55.000 o 70.000)
+// Los impuestos están incluidos en ese precio
+const total = computed(() => {
+  return cartStore.cartItems.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
+});
 
-onMounted(async () => {
-  // Check if returning from ePayco payment
-  const urlParams = route.query;
-  if (urlParams.ref_payco || urlParams.x_ref_payco) {
-    await handlePaymentResponse(urlParams);
-    return;
-  }
+// Calculamos la base imponible (precio sin impuestos)
+// Total = Base + IVA(19%) + INC(8%)
+// Total = Base * (1 + 0.19 + 0.08) = Base * 1.27
+const subtotal = computed(() => {
+  return Math.round(total.value / 1.27);
+});
 
+// IVA del 19% sobre la base
+const iva = computed(() => {
+  return Math.round(subtotal.value * 0.19);
+});
+
+// INC del 8% sobre la base
+const inc = computed(() => {
+  return Math.round(subtotal.value * 0.08);
+});
+
+onMounted(() => {
   // Load customer data
   const savedCustomer = localStorage.getItem("sc-styleurban-customer");
   if (savedCustomer) {
@@ -316,56 +292,14 @@ onMounted(async () => {
   // Generate order number
   orderNumber.value = orderService.generateOrderNumber();
 
-  // Redirect if cart is empty and not showing payment result
-  if (cartStore.cartItems.length === 0 && !paymentResult.value) {
-    // Check for pending order
-    const pendingOrder = localStorage.getItem("sc-styleurban-pending-order");
-    if (!pendingOrder) {
-      router.push("/");
-    }
+  // Redirect if cart is empty
+  if (cartStore.cartItems.length === 0) {
+    router.push("/");
   }
+
+  // Load ePayco script
+  loadEpaycoScript();
 });
-
-const handlePaymentResponse = async (params) => {
-  const response = params.x_response || params.response || "";
-  transactionRef.value = params.x_ref_payco || params.ref_payco || "";
-
-  // Load pending order
-  const pendingOrderStr = localStorage.getItem("sc-styleurban-pending-order");
-  let pendingOrder = null;
-
-  if (pendingOrderStr) {
-    pendingOrder = JSON.parse(pendingOrderStr);
-    orderNumber.value = pendingOrder.orderNumber;
-    paidAmount.value = pendingOrder.total;
-  }
-
-  // Determine payment status
-  if (response.toLowerCase() === "aceptada" || response === "1") {
-    paymentResult.value = "success";
-
-    if (pendingOrder) {
-      try {
-        pendingOrder.status = "Aprobado";
-        pendingOrder.paymentDetails.transactionRef = transactionRef.value;
-        await orderService.createOrder(pendingOrder);
-
-        // Clear cart and data
-        cartStore.clearCart();
-        localStorage.removeItem("sc-styleurban-customer");
-        localStorage.removeItem("sc-styleurban-pending-order");
-      } catch (error) {
-        console.error("Error saving order:", error);
-      }
-    }
-  } else if (response.toLowerCase() === "pendiente" || response === "3") {
-    paymentResult.value = "pending";
-  } else {
-    paymentResult.value = "failed";
-    errorMessage.value =
-      params.x_response_reason_text || "La transacción fue rechazada";
-  }
-};
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat("es-CO", {
@@ -379,519 +313,946 @@ const goBack = () => {
   router.push("/checkout");
 };
 
-// ePayco Checkout Integration
-const openEpaycoCheckout = () => {
-  if (isProcessing.value) return;
-
-  // Check if ePayco is available
-  if (typeof window.ePayco === "undefined") {
-    alert("Error: No se pudo cargar ePayco. Por favor recarga la página.");
-    return;
-  }
-
-  isProcessing.value = true;
-
-  // Create product description
-  const productDescription = cartStore.cartItems
-    .map((item) => `${item.name} (${item.size}) x${item.quantity}`)
-    .join(", ");
-
-  // Get taxes from cart store (IVA 19%, INC/ICO 8%)
-  const totalPrice = cartStore.totalPrice;
-  const taxBase = cartStore.taxBase;
-  const ivaAmount = cartStore.ivaAmount;
-  const icoAmount = cartStore.icoAmount;
-
-  // Configure ePayco handler
-  const handler = window.ePayco.checkout.configure({
-    key: "075441afc9f981a98531c8a15358c155",
-    test: false,
-  });
-
-  // Checkout data
-  const checkoutData = {
-    name: productDescription.substring(0, 100) || "Productos StyleUrban",
-    description: `Pedido ${orderNumber.value} - StyleUrban`,
-    invoice: orderNumber.value,
-    currency: "cop",
-    amount: String(totalPrice),
-    tax_base: String(taxBase),
-    tax: String(ivaAmount),
-    tax_ico: String(icoAmount),
-    country: "co",
-    name_billing: customerData.value.name || "",
-    address_billing: customerData.value.address || "",
-    email_billing: customerData.value.email || "",
-    mobilephone_billing: customerData.value.phone || "",
-    response: window.location.origin + "/payment",
-    external: "false",
-    extra1: orderNumber.value,
-    extra2: customerData.value.name || "",
-  };
-
-  // Save pending order
-  const pendingOrder = {
-    orderNumber: orderNumber.value,
-    customerName: customerData.value.name,
-    phone: customerData.value.phone,
-    email: customerData.value.email,
-    address: customerData.value.address,
-    notes: customerData.value.notes || "",
-    orderDate: new Date().toISOString(),
-    status: "Pendiente",
-    paymentMethod: "epayco",
-    paymentDetails: { method: "ePayco", invoice: orderNumber.value },
-    total: cartStore.totalPrice,
-    products: cartStore.cartItems.map((item) => ({
-      id: item.id,
-      name: item.name,
-      size: item.size,
-      price: item.price,
-      quantity: item.quantity,
-      subtotal: item.price * item.quantity,
-    })),
-  };
-
-  localStorage.setItem(
-    "sc-styleurban-pending-order",
-    JSON.stringify(pendingOrder)
-  );
-
-  // Open ePayco checkout
-  handler.open(checkoutData);
-  isProcessing.value = false;
+const goToCheckout = () => {
+  router.push("/checkout");
 };
 
-const goToHome = () => {
-  paymentResult.value = null;
+// Load ePayco script
+const loadEpaycoScript = () => {
+  return new Promise((resolve, reject) => {
+    // Check if already loaded
+    if (window.ePayco) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.epayco.co/checkout.js";
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load ePayco script"));
+    document.head.appendChild(script);
+  });
+};
+
+const processPayment = async () => {
+  isProcessing.value = true;
+
+  try {
+    // Ensure ePayco script is loaded
+    await loadEpaycoScript();
+
+    // Wait a bit more to ensure ePayco is fully initialized
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Check if ePayco is available
+    if (!window.ePayco) {
+      throw new Error("ePayco no está disponible");
+    }
+
+    // Prepare product description
+    const productDescription = cartStore.cartItems
+      .map((item) => `${item.name} (${item.size}) x${item.quantity}`)
+      .join(", ");
+
+    // Configure ePayco handler
+    const handler = window.ePayco.checkout.configure({
+      key: "075441afc9f981a98531c8a15358c155",
+      test: false,
+    });
+
+    // Prepare payment data
+    const data = {
+      name: productDescription,
+      description: productDescription,
+      invoice: orderNumber.value,
+      currency: "cop",
+      amount: total.value.toString(),
+      tax_base: subtotal.value.toString(),
+      tax: iva.value.toString(),
+      tax_ico: inc.value.toString(),
+      country: "co",
+      lang: "es",
+      external: "false",
+      response: "",
+      confirmation: "",
+    };
+
+    // Open ePayco checkout
+    handler.open(data);
+    isProcessing.value = false;
+
+    // Listener para respuesta de ePayco
+    window.addEventListener("message", async (event) => {
+      // ========== LOG COMPLETO DE RESPUESTA EPAYCO ==========
+      console.log("========== RESPUESTA EPAYCO ==========");
+      console.log("Evento completo:", event);
+      console.log("event.data:", event.data);
+      console.log("event.data.event:", event.data?.event);
+      console.log("event.data.data:", event.data?.data);
+      console.log("JSON completo:", JSON.stringify(event.data, null, 2));
+      console.log("=======================================");
+      // ======================================================
+
+      if (event.data.event === "epaycoClosed") {
+        console.log(">>> ePayco cerrado por el usuario");
+        isProcessing.value = false;
+      } else if (event.data.event === "epaycoSuccess") {
+        console.log(">>> PAGO EXITOSO - Datos:", event.data.data);
+        // Pago exitoso
+        const orderData = {
+          orderNumber: orderNumber.value,
+          customerName: customerData.value.name,
+          phone: customerData.value.phone,
+          email: customerData.value.email,
+          address: customerData.value.address,
+          notes: customerData.value.notes || "",
+          orderDate: new Date().toISOString(),
+          status: "Aprobado",
+          paymentMethod: "ePayco",
+          paymentDetails: {
+            method: "ePayco",
+            transactionId: event.data.data.x_transaction_id,
+            reference: event.data.data.x_ref_payco,
+          },
+          subtotal: subtotal.value,
+          iva: iva.value,
+          inc: inc.value,
+          total: total.value,
+          products: cartStore.cartItems.map((item) => ({
+            id: item.id,
+            name: item.name,
+            size: item.size,
+            price: item.price,
+            quantity: item.quantity,
+            subtotal: item.price * item.quantity,
+          })),
+        };
+
+        // Save order to database
+        await orderService.createOrder(orderData);
+
+        // If user is authenticated, save order to their account
+        if (authStore.isAuthenticated) {
+          await authStore.addOrder(orderData);
+        }
+
+        // Enviar notificación al administrador por WhatsApp
+        notificationService.sendOrderNotificationToAdmin(orderData);
+
+        // Clear cart and customer data
+        cartStore.clearCart();
+        localStorage.removeItem("sc-styleurban-customer");
+
+        // Show success modal
+        isProcessing.value = false;
+        showSuccessModal.value = true;
+      } else if (event.data.event === "epaycoError") {
+        // Error en el pago
+        console.log(">>> PAGO RECHAZADO/ERROR - Datos:", event.data);
+        console.log("Razón del error:", event.data?.data);
+        alert(
+          "Hubo un error al procesar el pago. Por favor intenta nuevamente."
+        );
+        isProcessing.value = false;
+      }
+    });
+  } catch (error) {
+    console.error("Error processing payment:", error);
+    alert("Hubo un error al procesar el pago. Por favor intenta nuevamente.");
+    isProcessing.value = false;
+  }
+};
+
+const closeModal = () => {
+  showSuccessModal.value = false;
   router.push("/");
 };
 
-const retryPayment = () => {
-  paymentResult.value = null;
-  // Reload pending order data
-  const pendingOrder = localStorage.getItem("sc-styleurban-pending-order");
-  if (pendingOrder) {
-    const order = JSON.parse(pendingOrder);
-    orderNumber.value = order.orderNumber;
-  }
+const goToHome = () => {
+  showSuccessModal.value = false;
+  router.push("/");
 };
 </script>
 
 <style scoped>
 .payment-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 20px;
-}
-
-/* Payment Main View */
-.payment-main {
-  max-width: 500px;
+  max-width: 1000px;
   margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
 }
 
 .payment-header {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .back-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #fff;
+  gap: 8px;
+  background: transparent;
   border: none;
-  color: #666;
-  font-size: 0.9rem;
+  color: #4a90e2;
+  font-size: 1rem;
   cursor: pointer;
-  padding: 10px 16px;
-  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 8px 0;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .back-btn:hover {
-  color: #1a1a1a;
+  color: #357abd;
   transform: translateX(-4px);
 }
 
-/* Payment Card */
-.payment-card {
-  background: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+.payment-header h1 {
+  font-size: 2.5rem;
+  color: #1a1a1a;
+  margin: 0;
 }
 
-/* Order Summary */
-.order-summary {
+.payment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.order-info h2,
+.payment-methods h2 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+}
+
+.info-card {
+  background: #f8f8f8;
   padding: 24px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
-  color: #fff;
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #666;
+}
+
+.info-row .value {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.info-row .total {
+  font-size: 1.3rem;
+  color: #4a90e2;
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.payment-option {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #ffffff;
+}
+
+.payment-option:hover {
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.1);
+}
+
+.payment-option.selected {
+  border-color: #4a90e2;
+  background: #f0f7ff;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+.option-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.option-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.epayco-icon {
+  background: linear-gradient(135deg, #00a8e8 0%, #0077b6 100%);
+  color: #ffffff;
+}
+
+.option-info {
+  flex: 1;
+}
+
+.option-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.3rem;
+  color: #1a1a1a;
+}
+
+.option-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.radio-check {
+  flex-shrink: 0;
+}
+
+.radio {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.radio.checked {
+  border-color: #4a90e2;
+  background: #4a90e2;
+}
+
+.radio.checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.option-details {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2c2c2c;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card-type-selector {
+  display: flex;
+  gap: 12px;
+}
+
+.card-type-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card-type-option:hover {
+  border-color: #4a90e2;
+  background: #f0f7ff;
+}
+
+.card-type-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.card-type-option span {
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.card-brand {
+  position: absolute;
+  right: 16px;
+  top: 38px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4a90e2;
+  background: #f0f7ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.help-text {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: -4px;
+}
+
+.amount-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  margin-top: 8px;
+}
+
+.amount-display span {
+  font-size: 1rem;
+  color: #666;
+}
+
+.amount-display strong {
+  font-size: 1.3rem;
+  color: #1a1a1a;
+}
+
+/* Purchase Summary Card (Black) */
+.purchase-summary-card {
+  background: #2c2c2c;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .summary-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  padding: 20px 24px;
+  background: #2c2c2c;
 }
 
 .summary-header svg {
-  opacity: 0.8;
+  color: #ffffff;
+  flex-shrink: 0;
 }
 
 .summary-header h2 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.summary-content {
+  padding: 0 24px 24px 24px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.info-row .label {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.info-row .value {
+  color: #ffffff;
+  font-size: 0.95rem;
   font-weight: 600;
 }
 
-.order-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.address-section {
+  padding: 14px 0;
 }
 
-.detail-item {
+.address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.address-header .label {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.edit-btn svg {
+  color: #ffffff;
+}
+
+.address-text {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.divider {
+  height: 1px;
+  background: #444;
+  margin: 16px 0;
+}
+
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.detail-item:last-child {
-  border-bottom: none;
-}
-
-.detail-item span {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-}
-
-.detail-item strong {
-  color: #fff;
+.product-name {
+  color: #ffffff;
   font-size: 0.95rem;
+  font-weight: 500;
 }
 
-.detail-item.tax-item {
-  padding: 4px 0;
-  border-bottom: none;
+.product-quantity {
+  color: #10b981;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
-.detail-item.tax-item span {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.85rem;
+.tax-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
 }
 
-.detail-item.tax-item strong {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.85rem;
+.tax-row .label {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  font-weight: 400;
 }
 
-.detail-item.highlight {
-  margin-top: 8px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+.tax-row .value {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
-.detail-item .price {
-  font-size: 1.4rem;
-  color: #4ade80;
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
 }
 
-/* ePayco Section */
-.epayco-section {
+.total-row .label {
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.total-row .value {
+  color: #10b981;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* Payment Method Card (White) */
+.payment-method-card {
+  background: #ffffff;
+  border-radius: 20px;
   padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.section-header {
+.epayco-header {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 24px;
 }
 
-.epayco-logo {
+.epayco-icon {
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
-  border-radius: 14px;
+  background: #10b981;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  flex-shrink: 0;
 }
 
-.section-title h3 {
+.epayco-icon svg {
+  color: #ffffff;
+}
+
+.epayco-info h3 {
   margin: 0 0 4px 0;
-  font-size: 1.1rem;
-  color: #1a1a1a;
-}
-
-.section-title p {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #888;
-}
-
-/* Payment Methods Grid */
-.payment-methods-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-.method-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 10px 8px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #666;
-}
-
-.method-badge span {
-  font-size: 1rem;
-}
-
-/* ePayco Main Button */
-.epayco-main-btn {
-  width: 100%;
-  padding: 18px 24px;
-  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.epayco-main-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 184, 148, 0.4);
-}
-
-.epayco-main-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.btn-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  color: #fff;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  color: #1f2937;
   font-weight: 700;
 }
 
-.btn-loading {
+.epayco-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.method-item {
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  color: #fff;
-  font-size: 1rem;
+  gap: 8px;
 }
 
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.method-icon {
+  font-size: 1.8rem;
+  line-height: 1;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Security Badges */
-.security-badges {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: #888;
-}
-
-.badge svg {
-  color: #00b894;
-}
-
-/* Payment Result View */
-.payment-result-view {
-  max-width: 500px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 40px);
-}
-
-.result-card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  width: 100%;
+.method-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
   text-align: center;
 }
 
-.result-icon {
-  width: 100px;
-  height: 100px;
+.pay-button {
+  width: 100%;
+  padding: 18px 24px;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.pay-button:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.pay-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pay-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.pay-button svg {
+  flex-shrink: 0;
+}
+
+.pay-button span {
+  font-weight: 700;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  animation: slideUp 0.3s ease;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
 }
 
-.result-content.success .result-icon {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #fff;
+.success-icon svg {
+  color: #ffffff;
 }
 
-.result-content.pending .result-icon {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #fff;
-}
-
-.result-content.failed .result-icon {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: #fff;
-}
-
-.result-content h2 {
-  margin: 0 0 8px 0;
-  font-size: 1.6rem;
+.modal-content h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.8rem;
   color: #1a1a1a;
 }
 
-.result-message {
-  margin: 0 0 24px 0;
+.modal-content p {
+  margin: 0 0 12px 0;
   color: #666;
   font-size: 1rem;
+  line-height: 1.6;
 }
 
-.result-details {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
+.modal-message {
+  margin-bottom: 16px !important;
 }
 
-.detail-row {
+.notification-info {
   display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.detail-row:last-child {
-  border-bottom: none;
-}
-
-.detail-row span {
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.detail-row strong {
-  color: #1a1a1a;
-  font-size: 0.95rem;
-}
-
-.email-notice {
-  color: #888;
-  font-size: 0.9rem;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: #e8f5e9;
+  border: 1px solid #27ae60;
+  border-radius: 8px;
   margin-bottom: 24px;
 }
 
-.pending-notice {
-  color: #888;
-  font-size: 0.9rem;
-  margin-bottom: 24px;
+.notification-info svg {
+  color: #27ae60;
+  flex-shrink: 0;
 }
 
-.result-btn {
-  width: 100%;
-  padding: 16px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
+.notification-info span {
+  color: #1b5e20;
+  font-size: 0.9rem;
   font-weight: 600;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.result-btn.primary {
-  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
-  color: #fff;
-}
-
-.result-btn.primary:hover {
+.modal-btn:hover {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
-.result-btn.secondary {
-  background: #f1f5f9;
-  color: #1a1a1a;
-}
-
-.result-btn.secondary:hover {
-  background: #e2e8f0;
-}
-
-.failed-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-  .payment-card {
-    border-radius: 16px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
 
-  .order-summary,
-  .epayco-section {
-    padding: 20px;
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+
+/* Desktop */
+@media (min-width: 768px) {
+  .payment-container {
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .payment-methods-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .payment-container {
+    padding: 16px;
   }
 
-  .method-badge {
-    padding: 12px;
+  .payment-header h1 {
+    font-size: 1.5rem;
   }
 
-  .result-card {
-    padding: 30px 20px;
+  .back-btn {
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+
+  .purchase-summary-card,
+  .payment-method-card {
+    border-radius: 16px;
+  }
+
+  .summary-header {
+    padding: 16px 20px;
+  }
+
+  .summary-header h2 {
+    font-size: 1.15rem;
+  }
+
+  .summary-content {
+    padding: 0 20px 20px 20px;
+  }
+
+  .total-row .value {
+    font-size: 1.4rem;
+  }
+
+  .payment-method-card {
+    padding: 20px;
+  }
+
+  .epayco-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .epayco-info h3 {
+    font-size: 1.05rem;
+  }
+
+  .epayco-info p {
+    font-size: 0.8rem;
+  }
+
+  .pay-button {
+    font-size: 1.1rem;
+    padding: 16px 20px;
   }
 }
 </style>

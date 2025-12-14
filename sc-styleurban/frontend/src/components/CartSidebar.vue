@@ -69,12 +69,13 @@
               </div>
               <button
                 class="remove-btn"
-                @click="cartStore.removeFromCart(item.id, item.size)"
+                @click="removeItem(item)"
+                title="Eliminar producto"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -129,6 +130,29 @@ const decreaseQuantity = (item) => {
   cartStore.updateQuantity(item.id, item.size, item.quantity - 1);
 };
 
+const removeItem = (item) => {
+  cartStore.removeFromCart(item.id, item.size);
+  showNotification(`✓ ${item.name} (Talla ${item.size}) eliminado del carrito`);
+};
+
+const showNotification = (message) => {
+  const notification = document.createElement("div");
+  notification.className = "cart-notification";
+  notification.textContent = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.classList.add("show");
+  }, 10);
+
+  setTimeout(() => {
+    notification.classList.remove("show");
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 3000); // 3 segundos
+};
+
 const goToCheckout = () => {
   cartStore.closeCart();
   router.push("/checkout");
@@ -165,28 +189,35 @@ const goToCheckout = () => {
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 2px solid #e0e0e0;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
 .cart-header h2 {
   margin: 0;
   font-size: 1.5rem;
+  font-weight: 800;
   color: #ffffff;
+  letter-spacing: 0.5px;
 }
 
 .close-btn {
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   cursor: pointer;
   padding: 8px;
   color: #ffffff;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
   transform: rotate(90deg);
-  color: #4a90e2;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .cart-content {
@@ -221,66 +252,72 @@ const goToCheckout = () => {
 
 .cart-item {
   display: flex;
-  gap: 16px;
-  padding: 16px;
-  background: #f8f8f8;
-  border-radius: 12px;
+  gap: 14px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
   position: relative;
   transition: all 0.3s ease;
 }
 
 .cart-item:hover {
-  background: #f0f0f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #d0d0d0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
+  width: 75px;
+  height: 75px;
   object-fit: cover;
   border-radius: 8px;
-  background: #e0e0e0;
+  background: #f0f0f0;
+  border: 1px solid #e5e7eb;
 }
 
 .item-details {
   flex: 1;
+  padding-right: 30px;
 }
 
 .item-details h3 {
-  margin: 0 0 8px 0;
-  font-size: 1rem;
-  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.2px;
 }
 
 .item-size {
   margin: 0 0 4px 0;
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.85rem;
+  color: #5a6c7d;
   font-weight: 600;
 }
 
 .item-price {
-  margin: 0 0 12px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1a1a1a;
+  margin: 0 0 10px 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #2c3e50;
 }
 
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .quantity-controls button {
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  background: #1a1a1a;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: #2c3e50;
   color: #ffffff;
   border: none;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -288,77 +325,92 @@ const goToCheckout = () => {
 }
 
 .quantity-controls button:hover {
-  background: #4a90e2;
+  background: #34495e;
   transform: scale(1.1);
 }
 
 .quantity-controls span {
-  font-weight: 600;
-  min-width: 30px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  min-width: 28px;
   text-align: center;
+  color: #2c3e50;
 }
 
 .remove-btn {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: transparent;
-  border: none;
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 6px;
   cursor: pointer;
   color: #e74c3c;
-  padding: 4px;
+  padding: 6px;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .remove-btn:hover {
-  transform: scale(1.2);
-  color: #c0392b;
+  background: #e74c3c;
+  color: #ffffff;
+  border-color: #e74c3c;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
 .cart-footer {
   padding: 24px;
-  border-top: 2px solid #e0e0e0;
-  background: #f8f8f8;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
 }
 
 .total-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 10px;
 }
 
 .total-label {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.3px;
 }
 
 .total-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #2c3e50;
+  letter-spacing: 0.5px;
 }
 
 .checkout-btn {
   width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+  padding: 15px;
+  background: #2c3e50;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.2);
 }
 
 .checkout-btn:hover {
-  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  background: #34495e;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+  box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
 }
 
 /* Transitions */
@@ -386,5 +438,28 @@ const goToCheckout = () => {
   .cart-sidebar {
     max-width: 100%;
   }
+}
+
+/* Notification styles */
+.cart-notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #2c3e50;
+  color: #ffffff;
+  padding: 16px 24px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+
+.cart-notification.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

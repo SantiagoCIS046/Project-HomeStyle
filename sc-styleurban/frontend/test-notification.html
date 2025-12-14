@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prueba de Notificación - StyleUrban</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+      }
+      button {
+        width: 100%;
+        padding: 15px;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:hover {
+        background: #229954;
+      }
+      button:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+      }
+      .info {
+        background: #e8f5e9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .info p {
+        margin: 5px 0;
+        color: #1b5e20;
+      }
+      .warning {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .warning p {
+        margin: 5px 0;
+        color: #856404;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        display: none;
+      }
+      .result.success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+      }
+      .result.error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📧 Prueba de Notificación por Email</h1>
+
+      <div class="info">
+        <p>
+          <strong>Email del administrador:</strong>
+          santiagocisneros046@gmail.com
+        </p>
+        <p>
+          <strong>Acción:</strong> Se enviará un email automáticamente con los
+          datos del pedido
+        </p>
+      </div>
+
+      <div class="warning">
+        <p>
+          <strong>⚠️ Nota:</strong> El email se enviará automáticamente sin
+          necesidad de confirmación.
+        </p>
+        <p>Revisa la bandeja de entrada (o spam) del email configurado.</p>
+      </div>
+
+      <button id="sendBtn" onclick="sendTestEmail()">
+        � Enviar Email de Prueba
+      </button>
+
+      <div id="result" class="result"></div>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ></script>
+    <script type="text/javascript">
+      // Inicializar EmailJS
+      (function () {
+        emailjs.init("gCqXvZ8kZPuHOLqVu");
+      })();
+    </script>
+
+    <script>
+      async function sendTestEmail() {
+        const btn = document.getElementById("sendBtn");
+        const resultDiv = document.getElementById("result");
+
+        // Deshabilitar botón
+        btn.disabled = true;
+        btn.textContent = "📧 Enviando...";
+        resultDiv.style.display = "none";
+        // Datos de prueba del pedido
+        const orderData = {
+          orderNumber: "TEST-" + Date.now(),
+          customerName: "Juan Pérez (PRUEBA)",
+          phone: "3001234567",
+          email: "juan.perez@example.com",
+          address: "Calle 123 #45-67, Bogotá, Colombia",
+          notes: "Por favor llamar antes de entregar",
+          orderDate: new Date().toISOString(),
+          status: "Aprobado",
+          paymentMethod: "ePayco",
+          paymentDetails: {
+            method: "ePayco",
+            transactionId: "TXN-" + Date.now(),
+            reference: "REF-" + Date.now(),
+          },
+          subtotal: 173228,
+          iva: 32913,
+          inc: 13858,
+          total: 220000,
+          products: [
+            {
+              id: 1,
+              name: "Camiseta Estampada Urban Style",
+              size: "M",
+              price: 55000,
+              quantity: 2,
+              subtotal: 110000,
+            },
+            {
+              id: 2,
+              name: "Camiseta Oversize Black",
+              size: "L",
+              price: 70000,
+              quantity: 1,
+              subtotal: 70000,
+            },
+          ],
+        };
+
+        try {
+          // Formatear precio
+          const formatPrice = (price) => {
+            return new Intl.NumberFormat("es-CO", {
+              style: "currency",
+              currency: "COP",
+              minimumFractionDigits: 0,
+            }).format(price);
+          };
+
+          // Formatear lista de productos
+          const productsList = orderData.products
+            .map((product, index) => {
+              return `${index + 1}. ${product.name} - Talla: ${
+                product.size
+              } - Cantidad: ${product.quantity} - ${formatPrice(
+                product.price * product.quantity
+              )}`;
+            })
+            .join("\n");
+
+          // Preparar parámetros del template
+          const templateParams = {
+            to_email: "santiagocisneros046@gmail.com",
+            to_name: "Administrador StyleUrban",
+            from_name: "StyleUrban - Sistema de Pedidos",
+            subject: `🛍️ Nuevo Pedido #${orderData.orderNumber}`,
+            order_number: orderData.orderNumber,
+            customer_name: orderData.customerName,
+            customer_phone: orderData.phone,
+            customer_email: orderData.email,
+            customer_address: orderData.address,
+            customer_notes: orderData.notes || "Sin notas adicionales",
+            order_status: orderData.status,
+            payment_method: orderData.paymentMethod,
+            transaction_id: orderData.paymentDetails?.transactionId || "N/A",
+            reference: orderData.paymentDetails?.reference || "N/A",
+            subtotal: formatPrice(orderData.subtotal),
+            iva: formatPrice(orderData.iva),
+            inc: formatPrice(orderData.inc),
+            total: formatPrice(orderData.total),
+            products_list: productsList,
+            order_date: new Date(orderData.orderDate).toLocaleString("es-CO", {
+              dateStyle: "full",
+              timeStyle: "short",
+            }),
+            message: `Nuevo pedido #${orderData.orderNumber} de ${
+              orderData.customerName
+            } por ${formatPrice(orderData.total)}`,
+          };
+
+          // Enviar email usando EmailJS
+          const response = await emailjs.send(
+            "service_tw1sivk",
+            "template_styleurban",
+            templateParams
+          );
+
+          console.log("✅ Email enviado exitosamente:", response);
+
+          // Mostrar resultado exitoso
+          resultDiv.className = "result success";
+          resultDiv.innerHTML = `
+            <p><strong>✅ Email enviado exitosamente!</strong></p>
+            <p>Pedido: ${orderData.orderNumber}</p>
+            <p>Destinatario: santiagocisneros046@gmail.com</p>
+            <p>Revisa la bandeja de entrada (o spam)</p>
+          `;
+          resultDiv.style.display = "block";
+
+          // Rehabilitar botón
+          btn.disabled = false;
+          btn.textContent = "📧 Enviar Email de Prueba";
+        } catch (error) {
+          console.error("❌ Error al enviar email:", error);
+
+          // Mostrar error
+          resultDiv.className = "result error";
+          resultDiv.innerHTML = `
+            <p><strong>❌ Error al enviar email</strong></p>
+            <p>${error.text || error.message || "Error desconocido"}</p>
+            <p>Verifica la configuración de EmailJS</p>
+          `;
+          resultDiv.style.display = "block";
+
+          // Rehabilitar botón
+          btn.disabled = false;
+          btn.textContent = "📧 Enviar Email de Prueba";
+        }
+      }
+
+      function formatOrderMessage(orderData) {
+        const {
+          orderNumber,
+          customerName,
+          phone,
+          email,
+          address,
+          notes,
+          status,
+          paymentMethod,
+          total,
+          subtotal,
+          iva,
+          inc,
+          products,
+          paymentDetails,
+        } = orderData;
+
+        // Formatear precio
+        const formatPrice = (price) => {
+          return new Intl.NumberFormat("es-CO", {
+            style: "currency",
+            currency: "COP",
+            minimumFractionDigits: 0,
+          }).format(price);
+        };
+
+        // Construir lista de productos
+        let productsList = "";
+        products.forEach((product, index) => {
+          productsList += `${index + 1}. ${product.name}\n`;
+          productsList += `   Talla: ${product.size}\n`;
+          productsList += `   Cantidad: ${product.quantity}\n`;
+          productsList += `   Precio: ${formatPrice(product.price)}\n`;
+          productsList += `   Subtotal: ${formatPrice(
+            product.price * product.quantity
+          )}\n\n`;
+        });
+
+        // Construir mensaje completo
+        const message = `
+🛍️ *NUEVO PEDIDO - StyleUrban*
+━━━━━━━━━━━━━━━━━━━━━━
+
+📋 *INFORMACIÓN DEL PEDIDO*
+• Pedido #: *${orderNumber}*
+• Estado: *${status}*
+• Fecha: ${new Date(orderData.orderDate).toLocaleString("es-CO")}
+
+👤 *DATOS DEL CLIENTE*
+• Nombre: ${customerName}
+• Teléfono: ${phone}
+• Email: ${email}
+• Dirección: ${address}
+${notes ? `• Notas: ${notes}\n` : ""}
+━━━━━━━━━━━━━━━━━━━━━━
+
+🛒 *PRODUCTOS*
+${productsList}
+━━━━━━━━━━━━━━━━━━━━━━
+
+💰 *RESUMEN DE PAGO*
+• Subtotal (Base): ${formatPrice(subtotal)}
+• IVA (19%): ${formatPrice(iva)}
+• INC/ICO (8%): ${formatPrice(inc)}
+• *TOTAL: ${formatPrice(total)}*
+
+💳 *MÉTODO DE PAGO*
+• Plataforma: ${paymentMethod}
+${
+  paymentDetails?.transactionId
+    ? `• ID Transacción: ${paymentDetails.transactionId}\n`
+    : ""
+}
+${
+  paymentDetails?.reference ? `• Referencia: ${paymentDetails.reference}\n` : ""
+}
+━━━━━━━━━━━━━━━━━━━━━━
+
+✅ *Pedido confirmado y pagado*
+Por favor, proceder con el despacho.
+            `.trim();
+
+        return message;
+      }
+    </script>
+  </body>
+</html>
