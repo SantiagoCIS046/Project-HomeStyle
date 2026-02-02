@@ -1,46 +1,43 @@
-# 🛍️ SC HomeStyle - Tienda de Ropa Online
+# 🛍️ Project HomeStyle - Tienda de Ropa Online
 
-E-commerce completo con Frontend (Vue 3 + Vite) y Backend (Express + Pagos Reales) integrados en un solo repositorio.
+E-commerce completo con Frontend (Vue 3 + Vite) e integración de pagos con **ePayco**.
+
+**🔗 Repositorio:** https://github.com/SantiagoCIS046/Project-HomeStyle
+
+**🌐 Demo en vivo:** https://home-style-black.vercel.app/
 
 ## 🚀 Características
 
 - ✅ **Frontend**: Vue 3 + Vite + Pinia + Vue Router
-- ✅ **Backend**: Express.js con API de pagos
-- ✅ **Pagos Reales**: Integración con Nequi y Wompi/Bancolombia
-- ✅ **Catálogo**: Camisetas Estampadas y Oversize
+- ✅ **Pagos**: Integración con ePayco (Tarjetas, PSE, Nequi, Efectivo)
+- ✅ **Impuestos**: IVA (19%) + INC/ICO (8%) calculados automáticamente
+- ✅ **Catálogo**: Camisetas Estampadas ($55,000) y Oversize ($70,000)
 - ✅ **Carrito**: Persistencia con localStorage
 - ✅ **Checkout**: Formulario completo de pedidos
 - ✅ **Responsive**: Diseño adaptable a todos los dispositivos
-- ✅ **Deploy**: Listo para GitHub y Vercel
+- ✅ **Deploy**: Configurado para Vercel
 
 ## 📁 Estructura del Proyecto
 
 ```
-StyleUrban/
+Project-HomeStyle/
 ├── sc-styleurban/
 │   ├── frontend/              # Aplicación Vue 3
 │   │   ├── src/
 │   │   │   ├── components/   # Componentes Vue
 │   │   │   ├── router/       # Vue Router
-│   │   │   ├── stores/       # Pinia stores
-│   │   │   ├── services/     # Servicios API
-│   │   │   └── ...
+│   │   │   ├── stores/       # Pinia stores (cart, auth)
+│   │   │   ├── services/     # Servicios (orders, notifications)
+│   │   │   ├── config/       # Configuración (ePayco, API)
+│   │   │   └── views/        # Vistas (Login, Register, Account)
 │   │   ├── public/           # Assets públicos
 │   │   └── package.json
 │   │
-│   └── backend/              # API Express
-│       ├── routes/           # Rutas de la API
-│       ├── services/         # Servicios de pago
-│       ├── utils/            # Utilidades
-│       ├── server.js         # Servidor Express
-│       └── package.json
-│
-├── api/                      # Serverless Functions (Vercel)
-│   └── index.js             # API unificada para producción
+│   └── backend/              # Base de datos JSON
+│       └── db.json           # Almacenamiento de pedidos
 │
 ├── package.json             # Scripts principales
 ├── vercel.json              # Configuración de Vercel
-├── .env.example             # Variables de entorno
 └── README.md                # Este archivo
 ```
 
@@ -49,57 +46,30 @@ StyleUrban/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/StyleUrban.git
-cd StyleUrban
+git clone https://github.com/SantiagoCIS046/Project-HomeStyle.git
+cd Project-HomeStyle
 ```
 
 ### 2. Instalar dependencias
 
 ```bash
-# Instalar dependencias raíz
+cd sc-styleurban/frontend
 npm install
-
-# Instalar dependencias de frontend y backend
-npm run install:all
-```
-
-### 3. Configurar variables de entorno
-
-```bash
-# Copiar archivo de ejemplo
-cp .env.example .env
-
-# Editar .env con tus credenciales
 ```
 
 ## 💻 Desarrollo Local
 
-### Iniciar Frontend y Backend simultáneamente
-
 ```bash
+cd sc-styleurban/frontend
 npm run dev
 ```
 
-Esto iniciará:
-
-- **Frontend**: http://localhost:5173
-- **Backend**: http://localhost:3000
-
-### Iniciar solo Frontend
-
-```bash
-npm run dev:frontend
-```
-
-### Iniciar solo Backend
-
-```bash
-npm run dev:backend
-```
+Esto iniciará el servidor en: **http://localhost:5173** o **http://localhost:5174**
 
 ## 📦 Build para Producción
 
 ```bash
+cd sc-styleurban/frontend
 npm run build
 ```
 
@@ -107,59 +77,58 @@ El build se generará en `sc-styleurban/frontend/dist/`
 
 ## 🌐 Despliegue en Vercel
 
-### Opción 1: Desde GitHub (Recomendado)
-
-1. **Sube el proyecto a GitHub**:
-
-   ```bash
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/tu-usuario/StyleUrban.git
-   git push -u origin main
-   ```
-
-2. **Conecta con Vercel**:
-
-   - Ve a [vercel.com](https://vercel.com)
-   - Click en "Import Project"
-   - Selecciona tu repositorio de GitHub
-   - Vercel detectará automáticamente la configuración
-
-3. **Configura las variables de entorno en Vercel**:
-
-   - En el dashboard de Vercel, ve a Settings > Environment Variables
-   - Agrega todas las variables de `.env.example`
-
-4. **Deploy**:
-   - Click en "Deploy"
-   - ¡Listo! Tu tienda estará en línea
-
-### Opción 2: Desde CLI
+### Subir cambios a GitHub
 
 ```bash
-# Instalar Vercel CLI
-npm install -g vercel
-
-# Deploy
-vercel
+git add -A
+git commit -m "Descripción del cambio"
+git push origin main
 ```
 
-## 🔐 Variables de Entorno para Producción
+> **Nota:** Si hay conflictos, usa `git push origin main --force`
 
-En Vercel, configura estas variables:
+### Vercel (Deploy Automático)
 
-```
-NEQUI_CLIENT_ID=tu_client_id_real
-NEQUI_CLIENT_SECRET=tu_client_secret_real
-NEQUI_API_KEY=tu_api_key_real
-WOMPI_PUBLIC_KEY=pub_prod_tu_key_real
-WOMPI_PRIVATE_KEY=prv_prod_tu_key_real
-WOMPI_EVENTS_SECRET=tu_events_secret_real
-FRONTEND_URL=https://tu-dominio.vercel.app
-BACKEND_URL=https://tu-dominio.vercel.app/api
-NODE_ENV=production
-```
+El proyecto está conectado a Vercel. Cada push a `main` despliega automáticamente.
+
+**URL de producción:** https://home-style-black.vercel.app/
+
+### Configuración de Vercel
+
+- **Framework Preset:** Vite
+- **Root Directory:** `sc-styleurban/frontend`
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
+
+## 💳 Integración ePayco
+
+El proyecto usa **ePayco** para procesar pagos:
+
+- **Tarjetas de crédito/débito**
+- **PSE (transferencia bancaria)**
+- **Nequi**
+- **Efectivo (Efecty, Baloto)**
+
+### Configuración
+
+La llave pública de ePayco está en:
+`sc-styleurban/frontend/src/config/epayco.js`
+
+## 🧾 Cálculo de Impuestos
+
+| Concepto        | Porcentaje      |
+| --------------- | --------------- |
+| Subtotal (Base) | Precio ÷ 1.27   |
+| IVA             | 19% sobre base  |
+| INC/ICO         | 8% sobre base   |
+| **Total**       | Precio completo |
+
+### Precios de productos
+
+| Producto           | Precio (incluye impuestos) |
+| ------------------ | -------------------------- |
+| Camiseta Estampada | $55,000 COP                |
+| Camiseta Oversize  | $70,000 COP                |
 
 ## 🛠️ Tecnologías
 
@@ -171,40 +140,27 @@ NODE_ENV=production
 - Vue Router
 - CSS3
 
-### Backend
-
-- Express.js
-- Axios
-- CORS
-- dotenv
-
 ### Pagos
 
-- Nequi API
-- Wompi API (Bancolombia)
+- ePayco Checkout
+
+### Deploy
+
+- Vercel
+- GitHub
 
 ## 📚 Documentación Adicional
 
-- [Integración de Pagos](sc-styleurban/frontend/md/INTEGRACION-PAGOS-REAL.md)
-- [Sistema de Pagos](sc-styleurban/frontend/md/SISTEMA-DE-PAGOS.md)
+- [Integración ePayco](sc-styleurban/frontend/md/INTEGRACION-EPAYCO.md)
+- [Cálculo de Impuestos](sc-styleurban/frontend/md/CALCULO-IMPUESTOS.md)
 - [Instrucciones de Uso](sc-styleurban/frontend/md/INSTRUCCIONES.md)
-
-## 🤝 Contribuir
-
-1. Fork el proyecto
-2. Crea una rama (`git checkout -b feature/nueva-caracteristica`)
-3. Commit tus cambios (`git commit -m 'Agregar nueva característica'`)
-4. Push a la rama (`git push origin feature/nueva-caracteristica`)
-5. Abre un Pull Request
-
-## 📝 Licencia
-
-MIT
 
 ## 👨‍💻 Autor
 
-SC StyleUrban
+**Santiago Cisneros** - [@SantiagoCIS046](https://github.com/SantiagoCIS046)
 
 ---
 
-**¿Necesitas ayuda?** Revisa la documentación en `sc-styleurban/frontend/md/`
+**🔗 Repositorio:** https://github.com/SantiagoCIS046/Project-HomeStyle
+
+**🌐 Demo:** https://home-style-black.vercel.app/
