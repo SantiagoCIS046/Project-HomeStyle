@@ -1,8 +1,8 @@
 {
-  "name": "sc-styleurban",
+  "name": "sc-homestyle",
   "private": true,
   "version": "1.0.0",
-  "description": "SC StyleUrban - Tienda de Ropa Online con Frontend y Backend integrados",
+  "description": "SC HomeStyle - Tienda de Ropa Online con Frontend y Backend integrados",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",

@@ -162,7 +162,7 @@ onMounted(() => {
   }
   // Prioridad 2: Cargar datos guardados en localStorage (si no hay usuario autenticado)
   else {
-    const savedCustomer = localStorage.getItem("sc-styleurban-customer");
+    const savedCustomer = localStorage.getItem("sc-homestyle-customer");
     if (savedCustomer) {
       const data = JSON.parse(savedCustomer);
       customerData.name = data.name || "";
@@ -223,7 +223,7 @@ const goBack = () => {
 
 const proceedToPayment = async () => {
   // Save customer data to localStorage
-  localStorage.setItem("sc-styleurban-customer", JSON.stringify(customerData));
+  localStorage.setItem("sc-homestyle-customer", JSON.stringify(customerData));
 
   // Si el usuario está autenticado, actualizar su perfil
   if (authStore.isAuthenticated && authStore.user) {

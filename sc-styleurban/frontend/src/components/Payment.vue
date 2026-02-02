@@ -284,7 +284,7 @@ const inc = computed(() => {
 
 onMounted(() => {
   // Load customer data
-  const savedCustomer = localStorage.getItem("sc-styleurban-customer");
+  const savedCustomer = localStorage.getItem("sc-homestyle-customer");
   if (savedCustomer) {
     customerData.value = JSON.parse(savedCustomer);
   }
@@ -442,7 +442,7 @@ const processPayment = async () => {
 
         // Clear cart and customer data
         cartStore.clearCart();
-        localStorage.removeItem("sc-styleurban-customer");
+        localStorage.removeItem("sc-homestyle-customer");
 
         // Show success modal
         isProcessing.value = false;

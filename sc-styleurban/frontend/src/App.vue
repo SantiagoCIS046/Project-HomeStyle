@@ -27,11 +27,7 @@ const showHeader = computed(() => route.path === "/");
       <div class="header-content">
         <div class="logo-container">
           <div class="logo-wrapper">
-            <img
-              src="/Logo de proyecto.png"
-              class="logo"
-              alt="SC StyleUrban Logo"
-            />
+            <img src="/Logo.png" class="logo" alt="SC HomeStyle Logo" />
             <div class="logo-glow"></div>
           </div>
         </div>
@@ -39,18 +35,18 @@ const showHeader = computed(() => route.path === "/");
         <div class="brand-info">
           <h1 class="brand-title">
             <span class="title-line">SC</span>
-            <span class="title-line title-main">UrbanStyle</span>
+            <span class="title-line title-main">Home Style</span>
           </h1>
           <div class="divider"></div>
           <p class="brand-subtitle">
             <span class="subtitle-icon">✦</span>
-            La calle habla, nosotros la vestimos
+            Tu estilo, tu hogar, tu esencia
             <span class="subtitle-icon">✦</span>
           </p>
           <div class="brand-tags">
-            <span class="tag">Estilo Urbano</span>
+            <span class="tag">Estilo Único</span>
             <span class="tag">Calidad Premium</span>
-            <span class="tag">Diseño Único</span>
+            <span class="tag">Diseño Exclusivo</span>
           </div>
         </div>
       </div>
@@ -63,7 +59,7 @@ const showHeader = computed(() => route.path === "/");
 
     <!-- Footer -->
     <footer class="footer">
-      <p>&copy; 2024 SC StyleUrban. Todos los derechos reservados.</p>
+      <p>&copy; HomeStyle. Todos los derechos reservados.</p>
     </footer>
   </div>
 </template>

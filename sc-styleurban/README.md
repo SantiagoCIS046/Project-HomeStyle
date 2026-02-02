@@ -1,4 +1,4 @@
-# 🛍️ SC StyleUrban - Tienda de Ropa Online
+# 🛍️ SC HomeStyle - Tienda de Ropa Online
 
 E-commerce completo con Frontend (Vue 3 + Vite) y Backend (Express + Pagos Reales) integrados en un solo repositorio.
 

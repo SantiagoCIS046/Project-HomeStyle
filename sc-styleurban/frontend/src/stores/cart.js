@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
 
-export const useCartStore = defineStore('cart', () => {
+export const useCartStore = defineStore("cart", () => {
   // State
   const items = ref([]);
   const isCartOpen = ref(false);
@@ -12,7 +12,10 @@ export const useCartStore = defineStore('cart', () => {
   });
 
   const totalPrice = computed(() => {
-    return items.value.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return items.value.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   });
 
   const cartItems = computed(() => items.value);
@@ -20,7 +23,7 @@ export const useCartStore = defineStore('cart', () => {
   // Actions
   function addToCart(product, size) {
     const existingItem = items.value.find(
-      item => item.id === product.id && item.size === size
+      (item) => item.id === product.id && item.size === size
     );
 
     if (existingItem) {
@@ -32,7 +35,7 @@ export const useCartStore = defineStore('cart', () => {
         price: product.price,
         size: size,
         image: product.image,
-        quantity: 1
+        quantity: 1,
       });
     }
 
@@ -42,9 +45,9 @@ export const useCartStore = defineStore('cart', () => {
 
   function removeFromCart(itemId, size) {
     const index = items.value.findIndex(
-      item => item.id === itemId && item.size === size
+      (item) => item.id === itemId && item.size === size
     );
-    
+
     if (index > -1) {
       items.value.splice(index, 1);
       saveToLocalStorage();
@@ -53,9 +56,9 @@ export const useCartStore = defineStore('cart', () => {
 
   function updateQuantity(itemId, size, quantity) {
     const item = items.value.find(
-      item => item.id === itemId && item.size === size
+      (item) => item.id === itemId && item.size === size
     );
-    
+
     if (item) {
       if (quantity <= 0) {
         removeFromCart(itemId, size);
@@ -84,11 +87,11 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   function saveToLocalStorage() {
-    localStorage.setItem('sc-styleurban-cart', JSON.stringify(items.value));
+    localStorage.setItem("sc-homestyle-cart", JSON.stringify(items.value));
   }
 
   function loadFromLocalStorage() {
-    const saved = localStorage.getItem('sc-styleurban-cart');
+    const saved = localStorage.getItem("sc-homestyle-cart");
     if (saved) {
       items.value = JSON.parse(saved);
     }
@@ -109,7 +112,6 @@ export const useCartStore = defineStore('cart', () => {
     clearCart,
     toggleCart,
     openCart,
-    closeCart
+    closeCart,
   };
 });
-

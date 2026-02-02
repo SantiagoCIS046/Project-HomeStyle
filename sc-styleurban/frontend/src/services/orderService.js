@@ -78,6 +78,6 @@ export const orderService = {
   generateOrderNumber() {
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 1000);
-    return `SCU-${timestamp}-${random}`;
+    return `SCH-${timestamp}-${random}`;
   },
 };

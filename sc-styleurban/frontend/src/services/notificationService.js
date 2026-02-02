@@ -31,8 +31,8 @@ export const notificationService = {
       // Preparar parámetros del template
       const templateParams = {
         to_email: ADMIN_EMAIL,
-        to_name: "Administrador StyleUrban",
-        from_name: "StyleUrban - Sistema de Pedidos",
+        to_name: "Administrador SC HomeStyle",
+        from_name: "SC HomeStyle - Sistema de Pedidos",
         subject: `🛍️ Nuevo Pedido #${orderData.orderNumber}`,
         order_number: orderData.orderNumber,
         customer_name: orderData.customerName,
@@ -132,7 +132,7 @@ export const notificationService = {
       .join("\n\n");
 
     return `
-NUEVO PEDIDO - StyleUrban
+NUEVO PEDIDO - SC HomeStyle
 
 INFORMACIÓN DEL PEDIDO
 • Pedido #: ${orderData.orderNumber}
@@ -221,7 +221,7 @@ Por favor, proceder con el despacho.
         <div class="container">
           <div class="header">
             <h1 style="margin: 0;">🛍️ NUEVO PEDIDO</h1>
-            <p style="margin: 10px 0 0 0; font-size: 24px; font-weight: bold;">StyleUrban</p>
+            <p style="margin: 10px 0 0 0; font-size: 24px; font-weight: bold;">SC HomeStyle</p>
           </div>
 
           <div class="content">
@@ -323,7 +323,7 @@ Por favor, proceder con el despacho.
           </div>
 
           <div class="footer">
-            <p style="margin: 0;">StyleUrban - Moda Urbana de Calidad</p>
+            <p style="margin: 0;">SC HomeStyle - Tu Estilo, Tu Esencia</p>
             <p style="margin: 5px 0 0 0; font-size: 14px;">© 2024 Todos los derechos reservados</p>
           </div>
         </div>
@@ -378,7 +378,7 @@ Por favor, proceder con el despacho.
 
     // Construir mensaje completo
     const message = `
-🛍️ *NUEVO PEDIDO - StyleUrban*
+🛍️ *NUEVO PEDIDO - SC HomeStyle*
 ━━━━━━━━━━━━━━━━━━━━━━
 
 📋 *INFORMACIÓN DEL PEDIDO*
@@ -476,7 +476,7 @@ Por favor, proceder con el despacho.
 Recibirás tu pedido en:
 📍 ${orderData.address}
 
-¡Gracias por tu compra en StyleUrban! 🛍️
+¡Gracias por tu compra en SC HomeStyle! 🛍️
     `.trim();
 
     return message;

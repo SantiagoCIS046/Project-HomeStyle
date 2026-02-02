@@ -6,7 +6,7 @@ El sistema calcula automáticamente los impuestos incluidos en el precio de las 
 
 ### Precios de Productos
 
-- **Camiseta Estampada**: $55.000 COP
+- **Camiseta Estampada**: $60.000 COP
 - **Camiseta Oversize**: $70.000 COP
 
 ### Fórmula de Cálculo
@@ -26,14 +26,14 @@ INC (8%) = Subtotal × 0.08
 
 ### Ejemplos Prácticos
 
-#### Ejemplo 1: 1 Camiseta Estampada ($55.000)
+#### Ejemplo 1: 1 Camiseta Estampada ($60.000)
 
 ```
-Total = $55.000
-Subtotal (Base) = $55.000 ÷ 1.27 = $43.307
-IVA (19%) = $43.307 × 0.19 = $8.228
-INC (8%) = $43.307 × 0.08 = $3.465
-Total = $43.307 + $8.228 + $3.465 = $55.000 ✓
+Total = $60.000
+Subtotal (Base) = $60.000 ÷ 1.27 = $47.244
+IVA (19%) = $47.244 × 0.19 = $8.976
+INC (8%) = $47.244 × 0.08 = $3.780
+Total = $47.244 + $8.976 + $3.780 = $60.000 ✓
 ```
 
 #### Ejemplo 2: 1 Camiseta Oversize ($70.000)
@@ -46,24 +46,24 @@ INC (8%) = $55.118 × 0.08 = $4.410
 Total = $55.118 + $10.472 + $4.410 = $70.000 ✓
 ```
 
-#### Ejemplo 3: 2 Camisetas Estampadas ($110.000)
+#### Ejemplo 3: 2 Camisetas Estampadas ($120.000)
 
 ```
-Total = $55.000 × 2 = $110.000
-Subtotal (Base) = $110.000 ÷ 1.27 = $86.614
-IVA (19%) = $86.614 × 0.19 = $16.457
-INC (8%) = $86.614 × 0.08 = $6.929
-Total = $86.614 + $16.457 + $6.929 = $110.000 ✓
+Total = $60.000 × 2 = $120.000
+Subtotal (Base) = $120.000 ÷ 1.27 = $94.488
+IVA (19%) = $94.488 × 0.19 = $17.953
+INC (8%) = $94.488 × 0.08 = $7.559
+Total = $94.488 + $17.953 + $7.559 = $120.000 ✓
 ```
 
-#### Ejemplo 4: 1 Estampada + 1 Oversize ($125.000)
+#### Ejemplo 4: 1 Estampada + 1 Oversize ($130.000)
 
 ```
-Total = $55.000 + $70.000 = $125.000
-Subtotal (Base) = $125.000 ÷ 1.27 = $98.425
-IVA (19%) = $98.425 × 0.19 = $18.701
-INC (8%) = $98.425 × 0.08 = $7.874
-Total = $98.425 + $18.701 + $7.874 = $125.000 ✓
+Total = $60.000 + $70.000 = $130.000
+Subtotal (Base) = $130.000 ÷ 1.27 = $102.362
+IVA (19%) = $102.362 × 0.19 = $19.449
+INC (8%) = $102.362 × 0.08 = $8.189
+Total = $102.362 + $19.449 + $8.189 = $130.000 ✓
 ```
 
 ## Resumen de Compra
@@ -110,4 +110,3 @@ const inc = computed(() => {
 ```
 
 Esto garantiza que los valores se actualicen automáticamente cuando cambia el carrito.
-

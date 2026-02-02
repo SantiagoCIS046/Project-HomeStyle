@@ -4,7 +4,7 @@
     <header class="header">
       <div class="header-content">
         <div class="logo">
-          <h1>StyleUrban</h1>
+          <h1>Home Style</h1>
         </div>
         <div class="header-actions">
           <!-- Categories Menu -->
@@ -158,25 +158,36 @@
             :key="product.id"
             class="product-card"
           >
-            <div class="product-image-container">
+            <div
+              class="product-image-container"
+              @click="openImageZoom(product)"
+            >
               <img
-                :src="product.image"
+                :src="product.images[currentImageIndex[product.id] || 0]"
                 :alt="product.name"
                 class="product-image"
               />
               <div class="product-badge">{{ product.size }}</div>
+              <div class="zoom-icon">🔍</div>
+              <div
+                class="image-indicator"
+                @click="toggleImage(product.id, $event)"
+              >
+                <span
+                  v-for="(img, index) in product.images"
+                  :key="index"
+                  :class="[
+                    'dot',
+                    { active: (currentImageIndex[product.id] || 0) === index },
+                  ]"
+                ></span>
+              </div>
             </div>
             <div class="product-info">
               <h3 class="product-name">{{ product.name }}</h3>
+              <p class="product-color">Color: {{ product.color }}</p>
+              <p class="product-size-info">Talla: {{ product.size }}</p>
               <p class="product-price">{{ formatPrice(product.price) }}</p>
-              <div class="size-selector">
-                <label>Talla:</label>
-                <select v-model="selectedSizes[product.id]" class="size-select">
-                  <option value="S">S</option>
-                  <option value="M">M</option>
-                  <option value="L">L</option>
-                </select>
-              </div>
               <button
                 class="buy-button"
                 @click="handleBuy(product, 'estampada')"
@@ -202,27 +213,36 @@
             :key="product.id"
             class="product-card"
           >
-            <div class="product-image-container">
+            <div
+              class="product-image-container"
+              @click="openImageZoom(product)"
+            >
               <img
-                :src="product.image"
+                :src="product.images[currentImageIndex[product.id] || 0]"
                 :alt="product.name"
                 class="product-image"
               />
               <div class="product-badge oversize">M</div>
+              <div class="zoom-icon">🔍</div>
+              <div
+                class="image-indicator"
+                @click="toggleImage(product.id, $event)"
+              >
+                <span
+                  v-for="(img, index) in product.images"
+                  :key="index"
+                  :class="[
+                    'dot',
+                    { active: (currentImageIndex[product.id] || 0) === index },
+                  ]"
+                ></span>
+              </div>
             </div>
             <div class="product-info">
               <h3 class="product-name">{{ product.name }}</h3>
+              <p class="product-color">Color: {{ product.color }}</p>
+              <p class="product-size-info">Talla: {{ product.size }}</p>
               <p class="product-price">{{ formatPrice(product.price) }}</p>
-              <div class="size-selector">
-                <label>Talla:</label>
-                <select
-                  v-model="selectedSizes[product.id]"
-                  class="size-select"
-                  disabled
-                >
-                  <option value="M">M</option>
-                </select>
-              </div>
               <button
                 class="buy-button"
                 @click="handleBuy(product, 'oversize')"
@@ -236,11 +256,65 @@
       </section>
     </div>
 
+    <!-- Modal de Zoom de Imagen -->
+    <Transition name="modal-fade">
+      <div
+        v-if="imageZoomModal.isOpen"
+        class="image-zoom-modal"
+        @click="closeImageZoom"
+      >
+        <div class="modal-content" @click.stop>
+          <button class="modal-close" @click="closeImageZoom">✕</button>
+
+          <div class="modal-header">
+            <h3>{{ imageZoomModal.productName }}</h3>
+          </div>
+
+          <div class="modal-body">
+            <button
+              v-if="imageZoomModal.images.length > 1"
+              class="modal-nav modal-prev"
+              @click="prevImageInModal"
+            >
+              ‹
+            </button>
+
+            <img
+              :src="imageZoomModal.imageUrl"
+              :alt="imageZoomModal.productName"
+              class="modal-image"
+            />
+
+            <button
+              v-if="imageZoomModal.images.length > 1"
+              class="modal-nav modal-next"
+              @click="nextImageInModal"
+            >
+              ›
+            </button>
+          </div>
+
+          <div class="modal-footer" v-if="imageZoomModal.images.length > 1">
+            <div class="modal-indicators">
+              <span
+                v-for="(img, index) in imageZoomModal.images"
+                :key="index"
+                :class="[
+                  'modal-dot',
+                  { active: imageZoomModal.currentIndex === index },
+                ]"
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-content">
         <div class="footer-section">
-          <h3>StyleUrban</h3>
+          <h3>HomeStyle</h3>
           <p>Moda urbana de calidad</p>
         </div>
         <div class="footer-section">
@@ -314,150 +388,342 @@ onUnmounted(() => {
   document.removeEventListener("click", handleClickOutside);
 });
 
+// Estado para controlar qué imagen se muestra (0 o 1)
+const currentImageIndex = reactive({});
+
+// Estado para el modal de zoom de imagen
+const imageZoomModal = reactive({
+  isOpen: false,
+  imageUrl: "",
+  productName: "",
+  currentIndex: 0,
+  images: [],
+});
+
 // Camisetas Estampadas - 4 camisetas por talla (S, M, L)
 const estampadasProducts = ref([
+  // Talla S
   {
     id: 1,
-    name: "Estampada Classic S",
+    name: "Camiseta Estampada Blanca",
+    color: "Blanco",
     size: "S",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, Blanco, Talla S.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, Blanco, Talla S. (2).jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 2,
-    name: "Estampada Urban S",
+    name: "Camiseta Estampada Negra",
+    color: "Negro",
     size: "S",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, color Negro, Talla S.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, color Negro, Talla S..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 3,
-    name: "Estampada Style S",
+    name: "Camiseta Estampada Negra",
+    color: "Negro",
     size: "S",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL("../img/Camiseta Estampada, negro, Talla S.jpeg", import.meta.url)
+        .href,
+      new URL(
+        "../img/Camiseta Estampada, negro, Talla S..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 4,
-    name: "Estampada Modern S",
+    name: "Camiseta Estampada Gris Claro",
+    color: "Gris Claro",
     size: "S",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, Gris Claro, Talla S.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, Gris Claro, Talla S..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
 
+  // Talla M
   {
     id: 5,
-    name: "Estampada Classic M",
+    name: "Camiseta Estampada Blanca",
+    color: "Blanco",
     size: "M",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, color Blanco, Talla M.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, color Blanco, Talla M..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 6,
-    name: "Estampada Urban M",
+    name: "Camiseta Estampada Negra",
+    color: "Negro",
     size: "M",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, color Negro, Talla M.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, color Negro, Talla M..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 7,
-    name: "Estampada Style M",
+    name: "Camiseta Estampada Hueso",
+    color: "Hueso",
     size: "M",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, color hueso, Talla M.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, color hueso, Talla M..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 8,
-    name: "Estampada Modern M",
+    name: "Camiseta Estampada Roja",
+    color: "Rojo",
     size: "M",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, color rojo, Talla M.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, color rojo, Talla M..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
 
+  // Talla L
   {
     id: 9,
-    name: "Estampada Classic L",
+    name: "Camiseta Estampada Hueso",
+    color: "Hueso",
     size: "L",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL("../img/Camiseta Estampada, Hueso, Talla L.jpeg", import.meta.url)
+        .href,
+      new URL(
+        "../img/Camiseta Estampada, Hueso, Talla L..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 10,
-    name: "Estampada Urban L",
+    name: "Camiseta Estampada Negra",
+    color: "Negro",
     size: "L",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL("../img/Camiseta Estampada, Negro, Talla L.jpeg", import.meta.url)
+        .href,
+      new URL(
+        "../img/Camiseta Estampada, Negro, Talla L..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
   {
     id: 11,
-    name: "Estampada Style L",
+    name: "Camiseta Estampada Verde Militar",
+    color: "Verde Militar",
     size: "L",
-    price: 55000,
-    image: "/camiseta.png",
-  },
-  {
-    id: 12,
-    name: "Estampada Modern L",
-    size: "L",
-    price: 55000,
-    image: "/camiseta.png",
+    price: 60000,
+    images: [
+      new URL(
+        "../img/Camiseta Estampada, Verde Militar,  Talla L.jpeg",
+        import.meta.url
+      ).href,
+      new URL(
+        "../img/Camiseta Estampada, Verde Militar, Talla L..jpeg",
+        import.meta.url
+      ).href,
+    ],
   },
 ]);
 
 // Camisetas Oversize - 6 camisetas en talla M
 const oversizeProducts = ref([
   {
-    id: 13,
-    name: "Oversize Essential",
+    id: 12,
+    name: "Camiseta Oversize Blanca",
+    color: "Blanco",
     size: "M",
     price: 70000,
-    image: "/camiseta.png",
+    images: [
+      new URL("../img/Overzise-Blanca,Talla M.jpeg", import.meta.url).href,
+      new URL("../img/Overzise-Blanco,Talla M..jpeg", import.meta.url).href,
+    ],
+  },
+  {
+    id: 13,
+    name: "Camiseta Oversize Gris",
+    color: "Gris",
+    size: "M",
+    price: 70000,
+    images: [
+      new URL("../img/Overzise-Gris,Talla M.jpeg", import.meta.url).href,
+      new URL("../img/Overzise-Gris,Talla M..jpeg", import.meta.url).href,
+    ],
   },
   {
     id: 14,
-    name: "Oversize Premium",
+    name: "Camiseta Oversize Marrón Claro",
+    color: "Marrón Claro",
     size: "M",
     price: 70000,
-    image: "/camiseta.png",
+    images: [
+      new URL("../img/Overzise-Marron Claro,Talla M.jpeg", import.meta.url)
+        .href,
+      new URL("../img/Overzise-Marron Claro,Talla M..jpeg", import.meta.url)
+        .href,
+    ],
   },
   {
     id: 15,
-    name: "Oversize Deluxe",
+    name: "Camiseta Oversize Marrón",
+    color: "Marrón",
     size: "M",
     price: 70000,
-    image: "/camiseta.png",
+    images: [
+      new URL("../img/Overzise-Marron,Talla M.jpeg", import.meta.url).href,
+      new URL("../img/Overzise-Marron,Talla M..jpeg", import.meta.url).href,
+    ],
   },
   {
     id: 16,
-    name: "Oversize Elite",
+    name: "Camiseta Oversize Negra",
+    color: "Negro",
     size: "M",
     price: 70000,
-    image: "/camiseta.png",
+    images: [
+      new URL("../img/Overzise-Negra,Talla M.jpeg", import.meta.url).href,
+      new URL("../img/Overzise-Negra,Talla M..jpeg", import.meta.url).href,
+    ],
   },
   {
     id: 17,
-    name: "Oversize Signature",
+    name: "Camiseta Oversize Negra",
+    color: "Negro",
     size: "M",
     price: 70000,
-    image: "/camiseta.png",
-  },
-  {
-    id: 18,
-    name: "Oversize Limited",
-    size: "M",
-    price: 70000,
-    image: "/camiseta.png",
+    images: [
+      new URL("../img/Overzise-Negro,Talla M.jpeg", import.meta.url).href,
+      new URL("../img/Overzise-Negro,Talla M..jpeg", import.meta.url).href,
+    ],
   },
 ]);
 
-// Initialize default sizes
+// Initialize default sizes and image indices
 estampadasProducts.value.forEach((product) => {
   selectedSizes[product.id] = product.size;
+  currentImageIndex[product.id] = 0;
 });
 
 oversizeProducts.value.forEach((product) => {
   selectedSizes[product.id] = "M";
+  currentImageIndex[product.id] = 0;
 });
+
+// Toggle between images
+const toggleImage = (productId, event) => {
+  // Prevenir que se abra el modal cuando se cambia de imagen
+  event.stopPropagation();
+
+  const product = [...estampadasProducts.value, ...oversizeProducts.value].find(
+    (p) => p.id === productId
+  );
+  if (product && product.images.length > 1) {
+    currentImageIndex[productId] =
+      ((currentImageIndex[productId] || 0) + 1) % product.images.length;
+  }
+};
+
+// Abrir modal de zoom de imagen
+const openImageZoom = (product) => {
+  imageZoomModal.isOpen = true;
+  imageZoomModal.productName = `${product.name} - Talla ${product.size}`;
+  imageZoomModal.images = product.images;
+  imageZoomModal.currentIndex = currentImageIndex[product.id] || 0;
+  imageZoomModal.imageUrl = product.images[imageZoomModal.currentIndex];
+
+  // Prevenir scroll del body cuando el modal está abierto
+  document.body.style.overflow = "hidden";
+};
+
+// Cerrar modal de zoom
+const closeImageZoom = () => {
+  imageZoomModal.isOpen = false;
+  imageZoomModal.imageUrl = "";
+  imageZoomModal.productName = "";
+  imageZoomModal.images = [];
+  imageZoomModal.currentIndex = 0;
+
+  // Restaurar scroll del body
+  document.body.style.overflow = "auto";
+};
+
+// Navegar entre imágenes en el modal
+const nextImageInModal = () => {
+  imageZoomModal.currentIndex =
+    (imageZoomModal.currentIndex + 1) % imageZoomModal.images.length;
+  imageZoomModal.imageUrl = imageZoomModal.images[imageZoomModal.currentIndex];
+};
+
+const prevImageInModal = () => {
+  imageZoomModal.currentIndex =
+    (imageZoomModal.currentIndex - 1 + imageZoomModal.images.length) %
+    imageZoomModal.images.length;
+  imageZoomModal.imageUrl = imageZoomModal.images[imageZoomModal.currentIndex];
+};
 
 // Filtered products based on size selection
 const filteredEstampadasProducts = computed(() => {
@@ -478,17 +744,18 @@ const formatPrice = (price) => {
 };
 
 const handleBuy = (product, type) => {
-  const selectedSize = selectedSizes[product.id];
+  const selectedSize = product.size;
 
-  if (!selectedSize) {
-    alert("Por favor selecciona una talla");
-    return;
-  }
+  // Crear objeto del producto con la imagen actual
+  const productToAdd = {
+    ...product,
+    image: product.images[currentImageIndex[product.id] || 0],
+  };
 
-  cartStore.addToCart(product, selectedSize);
+  cartStore.addToCart(productToAdd, selectedSize);
 
   // Show success message
-  const message = `✓ ${product.name} (Talla ${selectedSize}) agregado al carrito`;
+  const message = `✓ ${product.name} ${product.color} (Talla ${selectedSize}) agregado al carrito`;
   showNotification(message);
 };
 
@@ -852,13 +1119,14 @@ const showNotification = (message) => {
 
 .product-image-container {
   width: 100%;
-  height: 240px;
+  height: 280px;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
+  cursor: zoom-in;
 }
 
 .product-image {
@@ -870,6 +1138,58 @@ const showNotification = (message) => {
 
 .product-card:hover .product-image {
   transform: scale(1.05);
+}
+
+/* Zoom Icon */
+.zoom-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.product-image-container:hover .zoom-icon {
+  opacity: 1;
+}
+
+/* Image Indicator Dots */
+.image-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.image-indicator .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.image-indicator .dot.active {
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
 }
 
 .product-badge {
@@ -896,23 +1216,35 @@ const showNotification = (message) => {
 }
 
 .product-name {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   color: #2c3e50;
-  margin: 0 0 10px 0;
-  min-height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: 0.2px;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.3px;
   line-height: 1.3;
 }
 
+.product-color {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #5a6c7d;
+  margin: 0 0 4px 0;
+  letter-spacing: 0.2px;
+}
+
+.product-size-info {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #5a6c7d;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.2px;
+}
+
 .product-price {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: #2c3e50;
-  margin: 0 0 12px 0;
+  margin: 0 0 14px 0;
   letter-spacing: 0.3px;
 }
 
@@ -1209,6 +1541,226 @@ const showNotification = (message) => {
   .footer-content {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+}
+
+/* ========================================
+   MODAL DE ZOOM DE IMAGEN
+   ======================================== */
+
+/* Modal Overlay */
+.image-zoom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+/* Modal Content Container */
+.modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 20px 24px;
+  background: #2c3e50;
+  color: #ffffff;
+  text-align: center;
+  border-bottom: 2px solid #34495e;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Modal Close Button */
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* Modal Body */
+.modal-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  flex: 1;
+  min-height: 400px;
+  max-height: calc(90vh - 140px);
+}
+
+/* Modal Image */
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Navigation Buttons */
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(44, 62, 80, 0.8);
+  color: #ffffff;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 2.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-nav:hover {
+  background: rgba(44, 62, 80, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.modal-prev {
+  left: 20px;
+}
+
+.modal-next {
+  right: 20px;
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 16px;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Modal Indicators */
+.modal-indicators {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1d5db;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.modal-dot.active {
+  background: #2c3e50;
+  transform: scale(1.3);
+}
+
+/* Modal Fade Transition */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-active .modal-content,
+.modal-fade-leave-active .modal-content {
+  transition: transform 0.3s ease;
+}
+
+.modal-fade-enter-from .modal-content {
+  transform: scale(0.9);
+}
+
+.modal-fade-leave-to .modal-content {
+  transform: scale(0.9);
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .modal-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .modal-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 2rem;
+  }
+
+  .modal-prev {
+    left: 10px;
+  }
+
+  .modal-next {
+    right: 10px;
+  }
+
+  .modal-close {
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
   }
 }
 </style>
