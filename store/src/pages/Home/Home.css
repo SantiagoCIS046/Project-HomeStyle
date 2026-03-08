@@ -109,6 +109,7 @@
     border: none;
     cursor: pointer;
     transition: transform 0.2s;
+    border-radius: 30px;
 }
 
 .btn-cta.primary {
@@ -122,27 +123,14 @@
     color: #fff;
 }
 
-/* Promo Banner */
-.promo-banner {
-    background-color: #1A5CFF;
-    display: flex;
-    padding: 0.75rem 0;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.promo-item {
-    font-size: 0.75rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-}
+/* Promo Banner (Replaced with CurvedLoop) */
 
 /* Products Section */
 .products-section {
-    padding: 4rem 2rem;
+    padding: 6rem 2rem;
+    background-color: #050505;
+    border-top: 1px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
 }
 
 .section-header {
@@ -172,6 +160,15 @@
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background-color: #1A5CFF;
+    border-color: #1A5CFF;
+    color: #fff;
 }
 
 .product-grid {
@@ -240,6 +237,25 @@
     font-size: 0.9rem;
 }
 
+.add-to-cart-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #1A5CFF;
+    color: #fff;
+    border: none;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 30px;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #0d46d1;
+}
+
 /* Raw Section */
 .raw-section {
     position: relative;
@@ -291,86 +307,50 @@
     align-items: center;
     justify-content: center;
     border: 1px solid #111;
-}
-
-/* Footer */
-.footer {
-    padding: 6rem 4rem 2rem;
-    background-color: #0d0d0d;
-    border-top: 1px solid #111;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 4rem;
-}
-
-.footer-brand h2 {
-    font-size: 2rem;
-    font-weight: 900;
-    letter-spacing: -1px;
-    margin-bottom: 2rem;
-}
-
-.footer-col h4 {
-    font-size: 0.65rem;
-    color: #1A5CFF;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-}
-
-.footer-col ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-col li {
-    margin-bottom: 0.75rem;
-}
-
-.footer-col a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    font-weight: 700;
-}
-
-.newsletter-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.newsletter-form input {
-    padding: 1rem;
-    background-color: transparent;
-    border: 1px solid #333;
-    color: #fff;
-    outline: none;
-}
-
-.newsletter-form button {
-    padding: 1rem;
-    background-color: #fff;
-    color: #000;
-    border: none;
-    font-weight: 900;
-    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
     cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.3s ease;
 }
 
-.footer-bottom {
-    margin-top: 6rem;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.6rem;
-    color: #444;
-    font-weight: 700;
-    text-transform: uppercase;
+.raw-img:hover {
+    transform: translateY(-10px);
+    border-color: #1A5CFF;
 }
+
+.raw-hover-target {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.1);
+    transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 1;
+}
+
+.raw-img:hover .raw-hover-target {
+    opacity: 0.6;
+    transform: scale(1);
+}
+
+.raw-text-overlay {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.4s ease, color 0.3s ease;
+}
+
+.raw-img:hover .raw-text-overlay {
+    color: #1A5CFF;
+    transform: scale(1.1);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* Removed Footer CSS since it is now in Footer.css */
 
 /* Responsiveness */
 @media (max-width: 1200px) {
@@ -391,4 +371,81 @@
     .footer-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #0d0d0d;
+    border: 1px solid #333;
+    padding: 3rem;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.add-product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.add-product-form label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.add-product-form input,
+.add-product-form select {
+    width: 100%;
+    padding: 1rem;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.add-product-form input:focus,
+.add-product-form select:focus {
+    border-color: #1A5CFF;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: flex-end;
+}
+
+.modal-actions button {
+    font-size: 0.75rem;
+    padding: 1rem 1.5rem;
 }
