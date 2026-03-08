@@ -1,0 +1,760 @@
+/* ─────────────────────────────────── */
+/* Drops Page                          */
+/* ─────────────────────────────────── */
+
+.drops-container {
+    background-color: #060810;
+    color: #fff;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Cart badge ─── */
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #1A5CFF;
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 800;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Hero ─── */
+.drop-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+    padding: 5rem 6rem 5rem 8rem;
+    min-height: 90vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.drop-hero::before {
+    content: '004';
+    position: absolute;
+    right: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 2px #0d1220;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.drop-hero-left {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+.drop-status-badge {
+    display: inline-block;
+    background-color: #1A5CFF;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 0.35rem 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    border-radius: 2px;
+    animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.drop-hero-title {
+    font-size: 5.5rem;
+    font-weight: 900;
+    line-height: 0.95;
+    text-transform: uppercase;
+    margin: 0 0 2.5rem 0;
+}
+
+.drop-number {
+    color: #1A5CFF;
+    font-style: italic;
+    display: block;
+}
+
+/* ── Countdown ─── */
+.countdown {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.countdown-val {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+.countdown-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #555;
+    margin-top: 0.25rem;
+}
+
+/* ── Hero CTAs ─── */
+.drop-hero-ctas {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-notify {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #1A5CFF;
+    color: #fff;
+    border: none;
+    padding: 1rem 1.75rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-notify:hover {
+    background: #0d46d1;
+    transform: translateY(-2px);
+}
+
+.btn-catalog {
+    background: transparent;
+    color: #a0a5b8;
+    border: 1px solid #2a2f40;
+    padding: 1rem 1.75rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.2s;
+}
+
+.btn-catalog:hover {
+    border-color: #1A5CFF;
+    color: #fff;
+}
+
+/* ── Hero Image ─── */
+.drop-hero-right {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 420px;
+}
+
+.drop-hero-img-frame {
+    position: relative;
+    border: 2px solid #1A5CFF;
+    background: #0d1220;
+    overflow: hidden;
+}
+
+.drop-hero-img {
+    width: 100%;
+    height: 560px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(20%);
+    transition: filter 0.4s ease, transform 0.5s ease;
+}
+
+.drop-hero-img-frame:hover .drop-hero-img {
+    filter: grayscale(0%);
+    transform: scale(1.03);
+}
+
+.drop-hero-img-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    padding: 0.75rem 1rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #a0a5b8;
+    text-transform: uppercase;
+}
+
+/* ── Feature Cards ─── */
+.drop-features {
+    background-color: #07090f;
+    border-top: 1px solid #0d1220;
+    border-bottom: 1px solid #0d1220;
+    padding: 5rem 8rem;
+    /* Subtle dot grid pattern */
+    background-image: radial-gradient(circle, #1a1f35 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+.drop-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: rgba(26, 31, 53, 0.4);
+    border: 1px solid #1A2040;
+    padding: 2.5rem 2rem;
+    border-radius: 4px;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.feature-card:hover {
+    border-color: #1A5CFF;
+    transform: translateY(-6px);
+}
+
+.feature-icon {
+    margin-bottom: 1.25rem;
+}
+
+.feature-card h3 {
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem 0;
+    color: #fff;
+}
+
+.feature-card p {
+    font-size: 0.8rem;
+    color: #6a7185;
+    line-height: 1.75;
+    margin: 0;
+}
+
+/* ── Drops Pasados ─── */
+.drops-pasados {
+    padding: 6rem 8rem;
+    background-color: #060810;
+}
+
+.drops-pasados-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.drops-pasados-header h2 {
+    font-size: 2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 0;
+    font-style: italic;
+}
+
+.drops-archivo-tag {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #555;
+    margin-left: 0.75rem;
+    font-style: normal;
+}
+
+.btn-ver-historial {
+    background: transparent;
+    border: none;
+    color: #1A5CFF;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+}
+
+.btn-ver-historial:hover {
+    opacity: 0.7;
+}
+
+.drops-pasados-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.past-drop-card {
+    cursor: pointer;
+}
+
+.past-drop-img-wrap {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    background: #0d1220;
+    overflow: hidden;
+}
+
+.past-drop-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.85);
+    transition: filter 0.4s ease, transform 0.5s ease;
+}
+
+.past-drop-card:hover .past-drop-img-wrap img {
+    filter: brightness(1);
+    transform: scale(1.04);
+}
+
+.past-drop-tag {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #1A5CFF;
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 800;
+    padding: 0.3rem 0.6rem;
+    letter-spacing: 1px;
+}
+
+.past-drop-info {
+    padding: 1.25rem 0;
+}
+
+.past-drop-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.past-drop-date {
+    font-size: 0.65rem;
+    color: #555;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.past-drop-stock {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #1A5CFF;
+    letter-spacing: 1px;
+}
+
+.past-drop-stock.sold-out {
+    color: #555;
+    text-decoration: line-through;
+}
+
+.past-drop-info h4 {
+    font-size: 0.9rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 0 0 0.3rem 0;
+    color: #fff;
+}
+
+.past-drop-info p {
+    font-size: 0.7rem;
+    color: #555;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* ── Newsletter ─── */
+.drops-newsletter {
+    background: #07090f;
+    border-top: 1px solid #0d1220;
+    padding: 6rem 8rem;
+    text-align: center;
+}
+
+.newsletter-content {
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.newsletter-icon-wrap {
+    margin-bottom: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: rgba(26, 92, 255, 0.12);
+    border: 1px solid rgba(26, 92, 255, 0.3);
+    border-radius: 50%;
+}
+
+.newsletter-content h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    margin: 0 0 1rem 0;
+}
+
+.newsletter-content p {
+    font-size: 0.8rem;
+    color: #6a7185;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    text-transform: uppercase;
+    margin: 0 0 2.5rem 0;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 0;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.newsletter-form input {
+    flex: 1;
+    background: #0d1220;
+    border: 1px solid #1A2040;
+    border-right: none;
+    color: #fff;
+    padding: 1rem 1.25rem;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    text-transform: uppercase;
+}
+
+.newsletter-form input:focus {
+    border-color: #1A5CFF;
+}
+
+.newsletter-form button {
+    background: #1A5CFF;
+    color: #fff;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.newsletter-form button:hover {
+    background: #0d46d1;
+}
+
+.subscribed-msg {
+    color: #1A5CFF;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* ── Responsive ─── */
+@media (max-width: 1100px) {
+    .drop-hero {
+        padding: 4rem;
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .drop-hero-right {
+        flex: none;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .drop-features {
+        padding: 4rem 2rem;
+    }
+
+    .drop-features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .drops-pasados {
+        padding: 4rem 2rem;
+    }
+
+    .drops-pasados-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .drops-newsletter {
+        padding: 4rem 2rem;
+    }
+
+    .drop-hero-title {
+        font-size: 3.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .drop-hero {
+        padding: 3rem 1.5rem;
+    }
+
+    .countdown {
+        gap: 1rem;
+    }
+
+    .countdown-val {
+        font-size: 2rem;
+    }
+}
+
+/* ── Add Drop Button ── */
+.btn-add-drop {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #1A5CFF;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.15s;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-add-drop:hover {
+    background: #0d46d1;
+    transform: translateY(-1px);
+}
+
+/* ── Drop Modal ── */
+.drop-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.drop-modal {
+    background: #0d1220;
+    border: 1px solid #1A5CFF;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(26, 92, 255, 0.15);
+}
+
+.drop-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.75rem 2rem;
+    border-bottom: 1px solid #1a2240;
+}
+
+.drop-modal-header h2 {
+    font-size: 1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.drop-modal-close {
+    background: transparent;
+    border: none;
+    color: #6a7185;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.drop-modal-close:hover {
+    color: #fff;
+}
+
+.drop-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem;
+}
+
+.dm-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dm-field label {
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #4a5070;
+    text-transform: uppercase;
+}
+
+.dm-field input,
+.dm-field select {
+    background: #060810;
+    border: 1px solid #1a2240;
+    color: #fff;
+    padding: 0.85rem 1rem;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+    text-transform: uppercase;
+}
+
+.dm-field input:focus,
+.dm-field select:focus {
+    border-color: #1A5CFF;
+}
+
+.dm-field input::placeholder {
+    color: #2a3155;
+}
+
+.dm-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.dm-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px dashed #1a2240;
+    color: #6a7185;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.dm-upload-btn:hover {
+    border-color: #1A5CFF;
+    color: #fff;
+}
+
+.dm-preview {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 0.75rem;
+    border: 1px solid #1a2240;
+}
+
+.dm-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+.dm-btn-cancel {
+    flex: 1;
+    background: transparent;
+    border: 1px solid #1a2240;
+    color: #6a7185;
+    padding: 0.9rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.dm-btn-cancel:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+.dm-btn-save {
+    flex: 2;
+    background: #1A5CFF;
+    border: none;
+    color: #fff;
+    padding: 0.9rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.dm-btn-save:hover {
+    background: #0d46d1;
+}

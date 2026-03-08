@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Factura HomeStyle</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #090c14; font-family: 'Inter', Arial, sans-serif; color: #fff; }
+    .wrapper { max-width: 620px; margin: 0 auto; background: #0d1220; border: 1px solid #1a2240; border-radius: 8px; overflow: hidden; }
+
+    /* Header */
+    .header { background: #1A5CFF; padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 3px; color: #fff; }
+    .header-badge { background: rgba(255,255,255,0.15); font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; color: #fff; padding: 0.3rem 0.75rem; border-radius: 20px; }
+
+    /* Hero */
+    .hero { padding: 2.5rem; border-bottom: 1px solid #1a2240; }
+    .hero h1 { font-size: 2rem; font-weight: 900; font-style: italic; text-transform: uppercase; color: #fff; margin-bottom: 0.5rem; }
+    .hero p { font-size: 0.75rem; color: #6a7185; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .order-id-tag { display: inline-block; background: rgba(26,92,255,0.12); border: 1px solid rgba(26,92,255,0.3); color: #1A5CFF; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; padding: 0.3rem 0.8rem; border-radius: 20px; margin-top: 1rem; }
+
+    /* Info Row */
+    .info-row { display: flex; gap: 1.5rem; padding: 1.5rem 2.5rem; border-bottom: 1px solid #1a2240; background: #0a0d17; }
+    .info-block { flex: 1; }
+    .info-block .label { font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; color: #4a5070; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .info-block .value { font-size: 0.8rem; font-weight: 700; color: #fff; }
+
+    /* Items Table */
+    .items-section { padding: 1.5rem 2.5rem; }
+    .items-section h3 { font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #4a5070; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #4a5070; padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #1a2240; }
+    thead th:last-child { text-align: right; }
+    tbody td { font-size: 0.8rem; font-weight: 600; color: #a0a5b8; padding: 0.75rem; border-bottom: 1px solid #0f1422; vertical-align: middle; }
+    tbody td:last-child { text-align: right; color: #fff; font-weight: 800; }
+
+    /* Totals */
+    .totals { padding: 1.5rem 2.5rem; background: #0a0d17; border-top: 1px solid #1a2240; }
+    .total-row { display: flex; justify-content: space-between; font-size: 0.75rem; color: #6a7185; font-weight: 700; padding: 0.4rem 0; }
+    .total-row .val { color: #fff; }
+    .total-row.free .val { color: #1A5CFF; }
+    .divider { height: 1px; background: #1a2240; margin: 0.75rem 0; }
+    .grand-total { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; }
+    .grand-total .label { font-size: 1.1rem; font-weight: 900; font-style: italic; color: #fff; text-transform: uppercase; }
+    .grand-total .price { font-size: 1.4rem; font-weight: 900; color: #1A5CFF; }
+
+    /* Tracking Preview */
+    .tracking { padding: 1.5rem 2.5rem; border-top: 1px solid #1a2240; }
+    .tracking h3 { font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #4a5070; margin-bottom: 1.25rem; }
+    .track-steps { display: flex; gap: 0; }
+    .track-step { flex: 1; text-align: center; }
+    .step-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(26,92,255,0.15); border: 2px solid #1A5CFF; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem; font-size: 1rem; }
+    .step-label { font-size: 0.55rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #1A5CFF; }
+    .step-date { font-size: 0.55rem; color: #4a5070; margin-top: 0.25rem; }
+
+    /* CTA */
+    .cta { padding: 2rem 2.5rem; text-align: center; }
+    .cta-btn { display: inline-block; background: #1A5CFF; color: #fff; text-decoration: none; padding: 0.9rem 2.5rem; font-size: 0.8rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; border-radius: 30px; }
+
+    /* Footer */
+    .footer { padding: 1.5rem 2.5rem; border-top: 1px solid #1a2240; display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; color: #2a3155; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 1.5rem; font-size: 0.6rem; color: #2a3155; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+      <span class="logo-text">HOMESTYLE</span>
+      <span class="header-badge">FACTURA DIGITAL</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>¡Compra Exitosa!</h1>
+      <p>Tu pedido está en camino. Gracias por elegirnos.</p>
+      <div class="order-id-tag">ORDEN # {{order_id}}</div>
+    </div>
+
+    <!-- Info Row -->
+    <div class="info-row">
+      <div class="info-block">
+        <div class="label">Cliente</div>
+        <div class="value">{{to_name}}</div>
+      </div>
+      <div class="info-block">
+        <div class="label">Fecha del pedido</div>
+        <div class="value">{{order_date}}</div>
+      </div>
+      <div class="info-block">
+        <div class="label">Entrega estimada</div>
+        <div class="value">{{est_delivery}}</div>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="items-section">
+      <h3>Artículos del pedido</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th style="text-align:center;">Cant.</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{items_html}}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Totals -->
+    <div class="totals">
+      <div class="total-row">
+        <span>Subtotal</span>
+        <span class="val">{{subtotal}}</span>
+      </div>
+      <div class="total-row free">
+        <span>Envío Standard</span>
+        <span class="val">{{shipping}}</span>
+      </div>
+      <div class="divider"></div>
+      <div class="grand-total">
+        <span class="label">Total</span>
+        <span class="price">{{total}}</span>
+      </div>
+    </div>
+
+    <!-- Tracking Steps -->
+    <div class="tracking">
+      <h3>Estado del pedido</h3>
+      <div class="track-steps">
+        <div class="track-step">
+          <div class="step-circle">📋</div>
+          <div class="step-label">Revisado</div>
+          <div class="step-date">Hoy</div>
+        </div>
+        <div class="track-step">
+          <div class="step-circle">📦</div>
+          <div class="step-label">Empacado</div>
+          <div class="step-date">+1 día hábil</div>
+        </div>
+        <div class="track-step">
+          <div class="step-circle">🚚</div>
+          <div class="step-label">Enviado</div>
+          <div class="step-date">+2 días hábiles</div>
+        </div>
+        <div class="track-step">
+          <div class="step-circle">✅</div>
+          <div class="step-label">Entregado</div>
+          <div class="step-date">{{est_delivery}}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <a href="http://localhost:5173/carrito" class="cta-btn">VER SEGUIMIENTO DEL PEDIDO →</a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span class="footer-logo">⚙ HOMESTYLE CORP 2024</span>
+      <div class="footer-links">
+        <span>TÉRMINOS</span><span>PRIVACIDAD</span><span>SOPORTE</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

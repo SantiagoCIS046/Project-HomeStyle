@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, ShoppingBag, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ShinyText from '../../components/ShinyText/ShinyText';
@@ -6,6 +6,8 @@ import CurvedLoop from '../../components/CurvedLoop/CurvedLoop';
 import TiltedCard from '../../components/TiltedCard/TiltedCard';
 import PillNav from '../../components/PillNav/PillNav';
 import Footer from '../../components/Footer/Footer';
+import { useCart } from '../../context/CartContext';
+import { useCollections } from '../../context/CollectionsContext';
 import './Home.css';
 
 // Assets
@@ -95,6 +97,36 @@ const Home = () => {
         category: 'CAMISETAS',
         desc: 'NUEVO DROP / CUSTOM',
     });
+    const { addToCart, cartCount } = useCart();
+    const { collections, publishedCollections } = useCollections();
+
+    // Tick cada 60 s para que las colecciones pendientes se autopubliquen en el UI
+    const [tick, setTick] = useState(0);
+    useEffect(() => {
+        const id = setInterval(() => setTick(t => t + 1), 60000);
+        return () => clearInterval(id);
+    }, []);
+
+    // Colecciones aún no publicadas (aparecen en la sección "Próximas")
+    const pendingCollections = collections.filter(
+        c => new Date(c.publishedAt) > new Date()
+    );
+
+    // Merge local products + published collections (dedup by id)
+    const mergedProducts = [
+        ...productList,
+        ...publishedCollections
+            .filter(col => !productList.some(p => p.id === col.id))
+            .map(col => ({
+                id: col.id,
+                name: col.name,
+                price: `$${col.price.toLocaleString('es-CO')} COP`,
+                desc: col.tag,
+                image: col.image,
+                badge: 'COLECCIÓN',
+                category: 'COLECCIONES',
+            })),
+    ];
 
     const handleAddProduct = (e) => {
         e.preventDefault();
@@ -203,8 +235,8 @@ const Home = () => {
 
                 <PillNav
                     items={[
-                        { label: 'DROPS', href: '#drops' },
-                        { label: 'COLECCIONES', href: '#colecciones' },
+                        { label: 'DROPS', href: '/drops' },
+                        { label: 'COLECCIONES', href: '/colecciones' },
                         { label: 'ARCHIVOS', href: '#archivos' },
                         { label: 'NOSOTROS', href: '#nosotros' }
                     ]}
@@ -224,7 +256,19 @@ const Home = () => {
                         <Search size={14} color="#666" />
                         <input type="text" placeholder="BUSCAR..." />
                     </div>
-                    <ShoppingBag size={20} />
+                    <Link to="/carrito" style={{ color: 'inherit', display: 'flex', alignItems: 'center', position: 'relative' }}>
+                        <ShoppingBag size={20} />
+                        {cartCount > 0 && (
+                            <span style={{
+                                position: 'absolute', top: '-8px', right: '-8px',
+                                background: '#1A5CFF', color: '#fff',
+                                fontSize: '0.55rem', fontWeight: 800,
+                                width: '16px', height: '16px',
+                                borderRadius: '50%', display: 'flex',
+                                alignItems: 'center', justifyContent: 'center'
+                            }}>{cartCount}</span>
+                        )}
+                    </Link>
                     <div className="account-section">
                         {user ? (
                             <div className="user-profile" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
@@ -307,19 +351,13 @@ const Home = () => {
                 </div>
 
                 <div className="product-grid">
-                    {productList.filter(product => {
+                    {mergedProducts.filter(product => {
                         if (activeFilter === 'TODOS') return true;
-
-                        // If it has a strict category from the form
-                        if (product.category) {
-                            return product.category === activeFilter;
-                        }
-
-                        // Otherwise infer from name
-                        if (activeFilter === 'CAMISETAS' && (product.name.includes('Camiseta') || product.name.includes('Tee'))) return true;
-                        if (activeFilter === 'SUDADERAS' && product.name.includes('Sudadera')) return true;
-                        if (activeFilter === 'PANTALONES' && (product.name.includes('Pantalón') || product.name.includes('Cargo'))) return true;
-                        if (activeFilter === 'CHAMARRAS' && product.name.includes('Chamarra')) return true;
+                        if (product.category) return product.category === activeFilter;
+                        if (activeFilter === 'CAMISETAS' && (product.name.includes('Camiseta') || product.name.includes('Tee') || product.name.includes('CAMISETA') || product.name.includes('TEE'))) return true;
+                        if (activeFilter === 'SUDADERAS' && (product.name.includes('Sudadera') || product.name.includes('SUDADERA'))) return true;
+                        if (activeFilter === 'PANTALONES' && (product.name.includes('Pantalón') || product.name.includes('Cargo') || product.name.includes('CARGO'))) return true;
+                        if (activeFilter === 'CHAMARRAS' && (product.name.includes('Chamarra') || product.name.includes('CHAMARRA'))) return true;
                         return false;
                     }).map(product => (
                         <div key={product.id} className="product-card">
@@ -369,33 +407,85 @@ const Home = () => {
                                 </div>
                             )}
 
-                            <button className="add-to-cart-btn">AGREGAR AL CARRITO</button>
+                            <button
+                                className="add-to-cart-btn"
+                                onClick={() => addToCart({
+                                    id: product.id,
+                                    name: product.name,
+                                    category: product.category || 'HOMESTYLE',
+                                    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+                                    image: product.image,
+                                })}
+                            >
+                                AGREGAR AL CARRITO
+                            </button>
                         </div>
                     ))}
                 </div>
             </section>
 
-            {/* Branding Section */}
-            <section className="raw-section">
-                <div className="raw-bg-text">RAW</div>
-                <div className="raw-content">
-                    <h2>
-                        NUESTRA ESTÉTICA NO PIDE <em>PERMISO</em>. ES UNA RESPUESTA BRUTALISTA AL DISEÑO CONVENCIONAL.
-                    </h2>
-                    <div style={{ marginTop: '2rem', height: '2px', background: '#1A5CFF', width: '300px' }}></div>
-                </div>
+            {/* ── Próximas Colecciones ── */}
+            {pendingCollections.length > 0 && (
+                <section className="upcoming-section">
+                    {/* Header */}
+                    <div className="upcoming-header">
+                        <div className="upcoming-header-left">
+                            <span className="upcoming-sys-tag">SISTEMA // PRÓXIMOS LANZAMIENTOS</span>
+                            <h2 className="upcoming-title">COLECCIONES_<em>PRÓXIMAS</em></h2>
+                            <p className="upcoming-desc">
+                                Estas piezas saldrán a la venta en las próximas 24 horas.
+                                Revisa esta sección para ser el primero en adquirirlas.
+                            </p>
+                        </div>
+                        <div className="upcoming-announce">
+                            <span className="upcoming-dot" />
+                            <span>EN 24 HORAS A LA VENTA</span>
+                        </div>
+                    </div>
 
-                <div className="raw-visuals">
-                    <Link to="/home" className="raw-img">
-                        <img src={sudaderaImg} alt="Detail" className="raw-hover-target" />
-                        <div className="raw-text-overlay" style={{ fontSize: '0.6rem', fontWeight: '800' }}>DETAIL [001]</div>
-                    </Link>
-                    <Link to="/home" className="raw-img">
-                        <img src={chamarraImg} alt="Detail 2" className="raw-hover-target" />
-                        <div className="raw-text-overlay" style={{ fontSize: '2rem', fontWeight: '900' }}>2</div>
-                    </Link>
-                </div>
-            </section>
+                    {/* Grid de tarjetas */}
+                    <div className="upcoming-grid">
+                        {pendingCollections.map(col => {
+                            const isLive = new Date(col.publishedAt) <= new Date();
+                            return (
+                                <div className="upcoming-card" key={col.id}>
+                                    <div className="upcoming-card-img">
+                                        <img
+                                            src={col.image}
+                                            alt={col.name}
+                                            style={{ filter: isLive ? 'none' : 'grayscale(75%) brightness(0.7)' }}
+                                        />
+                                        <div className="upcoming-card-overlay">
+                                            <span className={`upcoming-status-tag ${isLive ? 'status-live' : 'status-pending'}`}>
+                                                {isLive ? '🟢 EN VENTA' : '⏳ PRONTO'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="upcoming-card-info">
+                                        <p className="upcoming-card-ref">{col.ref}</p>
+                                        <h3 className="upcoming-card-name">{col.name}</h3>
+                                        <p className="upcoming-card-price">
+                                            ${col.price.toLocaleString('es-CO')} COP
+                                        </p>
+                                        {isLive ? (
+                                            <button
+                                                className="upcoming-card-btn upcoming-btn-buy"
+                                                onClick={() => addToCart({ id: col.id, name: col.name, price: col.price, image: col.image, category: col.tag })}
+                                            >
+                                                + AGREGAR AL CARRITO
+                                            </button>
+                                        ) : (
+                                            <button className="upcoming-card-btn upcoming-btn-wait" disabled>
+                                                🔒 DISPONIBLE EN 24H
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
 
             {/* Footer */}
             <Footer />
