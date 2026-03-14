@@ -292,8 +292,8 @@
     background-color: #1A5CFF;
     color: #fff;
     border: none;
-    padding: 1.25rem;
-    font-size: 1rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
     cursor: pointer;
@@ -309,8 +309,8 @@
     background-color: transparent;
     color: #a0a5b8;
     border: 1px solid #1f222b;
-    padding: 1.25rem;
-    font-size: 1rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
     text-align: center;
@@ -355,18 +355,54 @@
 }
 
 @media (max-width: 768px) {
+    .cart-main-content {
+        padding: 2.5rem 1.5rem;
+    }
+
     .cart-item {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.5rem;
     }
 
     .cart-item-image {
         width: 100%;
-        max-width: 300px;
-        margin: 0 auto;
+        max-width: 250px;
     }
 
     .cart-title {
-        font-size: 3rem;
+        font-size: 2.8rem;
+    }
+
+    .cart-item-info-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cart-item-attributes {
+        justify-content: center;
+    }
+
+    .cart-item-actions {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    .cart-summary-box {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-title {
+        font-size: 2.2rem;
+    }
+    
+    .total-price {
+        font-size: 1.5rem;
     }
 }
 

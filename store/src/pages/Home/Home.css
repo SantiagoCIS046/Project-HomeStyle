@@ -103,7 +103,8 @@
 }
 
 .btn-cta {
-    padding: 1rem 2rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
     border: none;
@@ -239,12 +240,12 @@
 
 .add-to-cart-btn {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.6rem 1.5rem;
     background-color: #1A5CFF;
     color: #fff;
     border: none;
     font-weight: 800;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     cursor: pointer;
     border-radius: 30px;
@@ -517,11 +518,67 @@
     }
 
     .hero-content-home h1 {
-        font-size: 4rem;
+        font-size: 3.5rem;
     }
 
     .footer-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-home {
+        padding: 4rem 1.5rem;
+        min-height: 70vh;
+    }
+
+    .hero-content-home h1 {
+        font-size: 2.8rem;
+    }
+
+    .products-section {
+        padding: 4rem 1.5rem;
+    }
+
+    .product-grid {
+        gap: 1.5rem;
+    }
+
+    .footer-home {
+        padding: 4rem 1.5rem 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content-home h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero-ctas {
+        width: 100%;
+    }
+
+    .hero-ctas .btn-cta {
+        width: 100%;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upcoming-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
     }
 }
 

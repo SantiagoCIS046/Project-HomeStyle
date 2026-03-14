@@ -366,7 +366,7 @@
 
 .btn-login-main {
   width: 100%;
-  padding: 1.25rem;
+  padding: 0.6rem 1.5rem;
   background-color: var(--primary-blue);
   color: white;
   border: none;
@@ -375,7 +375,7 @@
   align-items: center;
   gap: 1rem;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: opacity 0.2s;
   text-transform: uppercase;
@@ -428,30 +428,51 @@
   }
 
   .hero-title h1 {
-    font-size: 4rem;
+    font-size: 3rem;
   }
 }
 
 @media (max-width: 900px) {
   .login-main {
     flex-direction: column;
+    overflow-y: auto;
   }
 
   .login-hero-section {
-    padding: 2rem;
+    padding: 3rem 1.5rem;
+    flex: none;
   }
 
   .login-form-section {
-    flex: 1;
+    flex: none;
     width: 100%;
+    padding: 0 1.5rem 3rem;
   }
 
-  .vertical-line {
-    width: 100%;
-    height: 2px;
+  .form-wrapper {
+    max-width: 100%;
+    min-height: auto;
   }
 
   .bg-text-large {
-    font-size: 12rem;
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title h1 {
+    font-size: 2.5rem;
+  }
+  
+  .sneaker-img {
+    max-width: 280px;
+  }
+  
+  .login-header {
+    padding: 0 1rem;
+  }
+  
+  .logo-text-large {
+    font-size: 1.2rem;
   }
 }

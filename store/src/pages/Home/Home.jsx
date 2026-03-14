@@ -237,8 +237,7 @@ const Home = () => {
                     items={[
                         { label: 'DROPS', href: '/drops' },
                         { label: 'COLECCIONES', href: '/colecciones' },
-                        { label: 'ARCHIVOS', href: '#archivos' },
-                        { label: 'NOSOTROS', href: '#nosotros' }
+                        { label: 'NOSOTROS', href: '/nosotros' }
                     ]}
                     activeHref=""
                     className="custom-nav"
@@ -301,8 +300,7 @@ const Home = () => {
                     </div>
 
                     <div className="hero-ctas">
-                        <button className="btn-cta primary">COMPRAR AHORA</button>
-                        <Link to="/lookbook" className="btn-cta outline" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>VER LOOKBOOK</Link>
+                        <Link to="/lookbook" className="btn-cta outline btn-lookbook" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>VER LOOKBOOK</Link>
                     </div>
                 </div>
             </section>

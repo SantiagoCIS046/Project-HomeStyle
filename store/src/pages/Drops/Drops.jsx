@@ -141,6 +141,7 @@ const Drops = () => {
                     items={[
                         { label: 'DROPS', href: '/drops' },
                         { label: 'COLECCIONES', href: '/colecciones' },
+                        { label: 'NOSOTROS', href: '/nosotros' },
                         { label: 'INICIO', href: '/home' },
                     ]}
                     activeHref="/drops"

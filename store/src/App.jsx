@@ -6,6 +6,7 @@ import Carrito from './pages/Carrito/Carrito'
 import Drops from './pages/Drops/Drops'
 import Checkout from './pages/Checkout/Checkout'
 import Colecciones from './pages/Colecciones/Colecciones'
+import Nosotros from './pages/Nosotros/Nosotros'
 import { CartProvider } from './context/CartContext'
 import { CollectionsProvider } from './context/CollectionsContext'
 
@@ -24,6 +25,7 @@ function App() {
               <Route path="/drops" element={<Drops />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/colecciones" element={<Colecciones />} />
+              <Route path="/nosotros" element={<Nosotros />} />
               {/* Catch-all for non-existent routes */}
               <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>

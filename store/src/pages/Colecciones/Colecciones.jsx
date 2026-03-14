@@ -112,6 +112,7 @@ export default function Colecciones() {
                     items={[
                         { label: 'COLECCIONES', href: '/colecciones' },
                         { label: 'DROPS', href: '/drops' },
+                        { label: 'NOSOTROS', href: '/nosotros' },
                         { label: 'INICIO', href: '/home' },
                     ]}
                     activeHref="/colecciones"

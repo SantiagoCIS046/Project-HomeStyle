@@ -64,10 +64,9 @@ const Carrito = () => {
 
                 <PillNav
                     items={[
-                        { label: 'DROPS', href: '/home#drops' },
-                        { label: 'COLECCIÓN', href: '/home#colecciones' },
-                        { label: 'ARCHIVOS', href: '/home#archivos' },
-                        { label: 'NOSOTROS', href: '/home#nosotros' }
+                        { label: 'DROPS', href: '/drops' },
+                        { label: 'COLECCIONES', href: '/colecciones' },
+                        { label: 'NOSOTROS', href: '/nosotros' }
                     ]}
                     activeHref=""
                     className="custom-nav"

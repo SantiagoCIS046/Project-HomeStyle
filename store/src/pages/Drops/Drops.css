@@ -144,8 +144,8 @@
     background: #1A5CFF;
     color: #fff;
     border: none;
-    padding: 1rem 1.75rem;
-    font-size: 0.75rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -163,8 +163,8 @@
     background: transparent;
     color: #a0a5b8;
     border: 1px solid #2a2f40;
-    padding: 1rem 1.75rem;
-    font-size: 0.75rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -506,12 +506,13 @@
         padding: 4rem;
         flex-direction: column;
         min-height: auto;
+        text-align: center;
     }
 
     .drop-hero-right {
         flex: none;
         width: 100%;
-        max-width: 500px;
+        max-width: 400px;
         margin: 0 auto;
     }
 
@@ -529,7 +530,7 @@
     }
 
     .drops-pasados-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .drops-newsletter {
@@ -539,6 +540,10 @@
     .drop-hero-title {
         font-size: 3.5rem;
     }
+
+    .countdown {
+        justify-content: center;
+    }
 }
 
 @media (max-width: 768px) {
@@ -546,12 +551,47 @@
         padding: 3rem 1.5rem;
     }
 
+    .drop-hero-title {
+        font-size: 2.8rem;
+    }
+
     .countdown {
         gap: 1rem;
+        flex-wrap: wrap;
     }
 
     .countdown-val {
-        font-size: 2rem;
+        font-size: 2.2rem;
+    }
+
+    .drops-pasados-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    .newsletter-form input {
+        border-right: 1px solid #1A2040;
+        border-bottom: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .drop-hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .drop-hero-ctas {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-notify, .btn-catalog {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -563,8 +603,8 @@
     background: #1A5CFF;
     color: #fff;
     border: none;
-    padding: 0.6rem 1.1rem;
-    font-size: 0.68rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -723,8 +763,8 @@
     background: transparent;
     border: 1px solid #1a2240;
     color: #6a7185;
-    padding: 0.9rem;
-    font-size: 0.75rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -744,8 +784,8 @@
     background: #1A5CFF;
     border: none;
     color: #fff;
-    padding: 0.9rem;
-    font-size: 0.75rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;

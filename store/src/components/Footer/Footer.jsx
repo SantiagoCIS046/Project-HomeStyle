@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import ShinyText from '../ShinyText/ShinyText';
 import './Footer.css';
 
@@ -29,10 +29,10 @@ const Footer = () => {
                 <div className="footer-col">
                     <h4>TIENDA</h4>
                     <ul>
-                        <li><a href="#">TODOS LOS PRODUCTOS</a></li>
-                        <li><a href="#">BÁSICOS</a></li>
-                        <li><a href="#">COLABORACIONES</a></li>
-                        <li><a href="#">GUÍA DE TALLAS</a></li>
+                        <li><Link to="/home">INICIO</Link></li>
+                        <li><Link to="/drops">DROPS</Link></li>
+                        <li><Link to="/colecciones">COLECCIONES</Link></li>
+                        <li><Link to="/nosotros">NOSOTROS</Link></li>
                     </ul>
                 </div>
 
